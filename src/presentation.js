@@ -1,0 +1,32 @@
+import {RULES,previewChoice} from './engine.js';
+import {SEASONS} from './events.js';
+import {SOURCE_NOTE} from './sources.js';
+import {resourceIcon} from './resource-ui.js';
+import {ZHIHU_BRIDGE,zhihuEchoMarkup} from './zhihu-context.js';
+import {LIFE_CHAPTERS} from './season-chapters.js';
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=n=>new Intl.NumberFormat('zh-CN').format(n);
+const sign=n=>`${n>0?'+':''}${money(n||0)}`;
+export const professionalTitle=exp=>exp>=150?'独立顾问':exp>=70?'项目骨干':exp>=30?'职场进阶':'初出茅庐';
+export function welcomeMarkup(setup,saved){return `<div class="welcome-top"><span class="tiny-label">知乎四时 · 像素小镇来信</span><span class="edition">田园三选版 · v4</span></div>
+  <div class="welcome-layout"><div class="welcome-story"><div class="welcome-illustration"><span class="welcome-orbit"></span><img src="/characters/wave.gif" alt="刘看山向你打招呼"/><i>带着自己，慢慢出发。</i></div><span class="welcome-kicker">刘看山陪你 · 四季人生体验</span><h1>四季很长，<br>每一步都算数。</h1><p class="intro-copy">把知乎经验，走成自己的四季。</p><div class="starter-resources"><span title="初始储备金">${resourceIcon('coin')}<b>${money(RULES.money)}</b></span><span title="初始情绪">${resourceIcon('heart')}<b>${RULES.mood}</b></span><span title="初始专业">${resourceIcon('star')}<b>${RULES.exp}</b></span></div></div>
+  <div class="welcome-setup"><label class="name-label" for="character-name">这一程，怎样称呼你？</label><input id="character-name" maxlength="16" value="${esc(setup.name)}" autocomplete="off" placeholder="刘看山"/><fieldset class="talent-picker"><legend>带上一种出发的心态</legend>${[['defense','稳健防守','认真记录，稳稳前行'],['ambitious','锐意进取','向前尝试，接住变化'],['optimistic','乐天知命','照顾自己的节奏']].map(([v,n,d])=>`<label><input type="radio" name="talent" value="${v}" ${setup.talent===v?'checked':''}/><span><b>${n}</b><small>${d}</small></span></label>`).join('')}</fieldset><div class="welcome-actions"><button id="start-full" class="primary">走进我的四季 <span>→</span><small>40 站地图 · 目标 6–10 分钟</small></button><button id="start-demo" class="secondary">先走一小段 <span>12 站精选 · 目标 1–3 分钟</span></button>${saved?'<button id="resume" class="text-button">继续上次的旅程 →</button>':''}</div><p class="welcome-fineprint">先凭心意三选一，再读知乎经验的回声。<br>虚构情景，不预言人生；旧版存档保留。</p></div></div>`;}
+export function compactScene(scene){
+  const text=String(scene??'').trim(),sentences=text.match(/[^。！？]+[。！？]?/g)||[];
+  // Preserve the entire factual setup for our current short scenes. Longer
+  // authored scenes retain a native, keyboard-accessible background drawer.
+  if(sentences.length<=2)return {preview:text,remainder:''};
+  return {preview:sentences.slice(0,2).join(''),remainder:sentences.slice(2).join('')};
+}
+export function eventMarkup(state,source=''){
+  const e=state.active,scene=compactScene(e.scene);
+  // Preview is used only to enforce affordability. No outcome data enters the
+  // choice DOM, including hidden text, labels, tooltips or disabled reasons.
+  const options=e.options.map((option,index)=>{
+    const unavailable=previewChoice(state,option).disabled;
+    return `<button type="button" class="choice" data-choice="${index}"${unavailable?' disabled':''}><span class="choice-letter" aria-hidden="true">${['一','二','三'][index]||index+1}</span><span class="choice-body"><strong>${esc(option.label)}</strong>${unavailable?'<small class="choice-unavailable">暂时无法选择，请换一种回应。</small>':''}</span><span class="choice-arrow" aria-hidden="true">›</span></button>`;
+  }).join('');
+  return `<div class="panel-topline"><span class="event-kind">${SEASONS[e.season].name} · ${LIFE_CHAPTERS[e.season].stage}</span><span class="tiny-label">第 ${state.position+1} / ${state.total} 站</span></div><div class="event-layout"><div class="event-story"><span class="event-overline">${esc(e.location||e.title)}</span><h2 id="event-heading" tabindex="-1">${esc(e.title)}</h2><p class="event-scene">${esc(scene.preview)}</p>${scene.remainder?`<details class="event-background"><summary>展开故事背景</summary><p>${esc(scene.remainder)}</p></details>`:''}<span class="zhihu-story-bridge"><span class="zhihu-badge" aria-hidden="true">知</span>${ZHIHU_BRIDGE}</span></div><div class="decision-area"><h3 class="choice-prompt">${esc(e.prompt)}</h3><div class="options options-${e.options.length}">${options}</div></div></div>${source}`;
+}
+export function feedbackMarkup(state,ai,auto,practice=''){const h=state.history.at(-1);return `<div class="panel-topline"><span class="event-kind">这一刻，已有回响</span><span class="tiny-label">第 ${state.turn} 页手记</span></div><span class="feedback-seal">✓</span><h2>${state.ended&&state.ended!=='complete'?'这一程，先停一停。':'这一页，属于你。'}</h2><p class="chosen-line">你选择了「${esc(h.choiceLabel)}」</p><p class="result-copy">${esc(h.result)}</p><div class="result-stats">${[['coin','储备金',h.moneyDelta,money(state.money)],['heart','情绪',h.moodDelta,`${state.mood} / ${state.moodMax||100}`],['star','专业',h.expDelta,`${state.exp} · ${professionalTitle(state.exp)}`]].map(([icon,title,delta,total])=>`<div><span>${resourceIcon(icon)} ${title}</span><strong class="${delta>=0?'positive':'negative'}">${sign(delta)}</strong><small>${total}</small></div>`).join('')}</div>${zhihuEchoMarkup(h)}${practice}<button id="next-button" class="primary">${state.ended?'收下人生手记':'继续我的四季'} ↗</button><small class="continue-note">${state.ended?'每个结局，都值得留下。':auto?'继续后自动投骰。':'自动出发已暂停；继续后可按空格前行。'}</small><details class="reflection-drawer"><summary>刘看山的 AI 回响 <span>按需展开</span></summary>${ai}</details><details class="settlement-drawer"><summary>本次取舍与结算说明</summary><p>${esc(h.lesson)}</p>${h.conditionNote?`<p>${esc(h.conditionNote)}</p>`:''}${h.talentNote?`<p>${esc(h.talentNote)}</p>`:''}<small>以上为游戏规则，不是知乎作者的现实结论。</small></details>`;}
+export function rulesMarkup(){return `<span class="tiny-label">像素小镇 · 出发手册</span><h2>让骰子带路，把选择留给你。</h2><div class="rules-grid"><article><b>一</b><h3>带上自己的行囊</h3><p>初始储备金 ${money(RULES.money)} 元、情绪 ${RULES.mood}、专业 ${RULES.exp}。顶部记录当前状态。暂时不可行的方案会标明，你仍可选择其他回应。</p></article><article><b>二</b><h3>四十站，不绕圈</h3><p>完整路线40站，快速路线12站。六面骰决定步数，只有停靠的地点发生故事。每局遇见不同的片段，未经历的选择不会写入手记。</p></article><article><b>三</b><h3>每个故事，三种回应</h3><p>先看这一刻的故事，再从三种回应中选择。选择前不预告具体结果；确认后才揭晓经历与资源变化。特别地点有可跳过的短片，正式动画到来前使用临时演绎。</p></article><article><b>四</b><h3>把经历留成手记</h3><p>成长来自一路积累。结算后可查看资源变化、故事回响与相近的知乎讨论。AI根据已发生的经历陪你复盘，不作现实人生或心理诊断。</p></article></div><div class="rule-callout"><b>按自己的节奏</b><p>像素小镇适合横屏游玩。默认自动投骰；关闭「自动出发」后可按空格继续。弹窗与竖屏会暂停推进。完整目标6–10分钟、快速1–3分钟，随骰子与阅读速度变化。</p></div><p class="muted">进度保存在当前浏览器。v4为新的三选旅程，旧版存档保留但不混用。</p><p class="muted">${SOURCE_NOTE}</p>`;}

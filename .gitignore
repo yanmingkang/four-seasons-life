@@ -1,0 +1,26 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+test-results/
+*.log
+.private-share/
+tools/cloudflared/
+
+# Local source archive; extracted runtime assets and licenses remain tracked.
+references/kenney-nature-kit.zip
+
+# Developer credentials, local settings and temporary editor files.
+.codex/
+.vscode/
+.idea/
+auth.json
+*.pem
+*.key
+*.pfx
+*.p12
+*.tmp
+*.bak
+.DS_Store
+Thumbs.db

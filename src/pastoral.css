@@ -1,0 +1,41 @@
+/* Warm timber / paper HUD. Keep choices equally weighted: colour is not a hint. */
+.status-strip,.story-panel,.world-location,.travel-status,.map-controls button{
+  border-color:#8d603f;border-radius:3px;
+  box-shadow:0 3px 0 #65482e,0 0 0 2px #ebc88a,inset 0 0 0 2px #fff3cf;
+}
+.status-strip{background:#fff0cceF;border-width:2px}
+.story-panel{background:#fff5dc;border-width:3px;backdrop-filter:none}
+.story-panel:before{background:#d8a55d}
+.world-vignette{background:linear-gradient(180deg,#1b456518,transparent 18%,transparent 82%,#274c331a)}
+.overlay-open .world-vignette{background:#26413220}
+.brand-mark{border-radius:3px;background:#337b73;border:2px solid #fae7b6;box-shadow:0 2px 0 #4b3a27}
+.event-kind{color:#7a482b}.event-overline{color:#786349;font-size:10px;letter-spacing:1px}
+.event-scene{background:#f3ebcd;color:#544a36;border-color:#d8c49d;border-radius:3px}
+.event-layout{display:grid;grid-template-columns:1fr;gap:3px}
+.options-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.options-3 .choice{min-height:108px;align-items:flex-start;background:#fffcf0;border:2px solid #c6a474;border-radius:3px;box-shadow:0 3px 0 #c19e6b;gap:8px;padding:14px 11px;text-align:left}
+.options-3 .choice:hover:not(:disabled){background:#fff1c4;border-color:#94724b;box-shadow:0 5px 0 #b69563;transform:translateY(-2px)}
+.options-3 .choice:focus-visible{outline:3px solid #2c7771;outline-offset:4px}
+.choice-letter{background:#eed8ab;border:1px solid #ba8e59;color:#78502e;border-radius:2px}
+.choice-body{min-width:0;flex:1}.choice-arrow{color:#9b7a50;margin-top:3px}.choice-unavailable{display:block;font-size:10px;line-height:1.6;margin-top:7px}
+.choice-footnote{color:#7c684a;font-size:11px;margin:15px 0 3px;line-height:1.7}
+.primary{background:#517a3d;border:2px solid #365931;box-shadow:0 3px 0 #314d29;border-radius:3px}
+.secondary{background:#f1ddb7;border:2px solid #b48b57;border-radius:3px;color:#705237}
+.talent-picker label{border-radius:3px}.talent-picker label:has(input:checked){background:#e5edc9;border-color:#819857}
+.world-location{background:#fff1d5eb}.world-location>strong{color:#5a6439}
+.feedback-panel .result-stats{border:1px solid #d5bd92;background:#f4e6c5;border-radius:3px}
+.bottom-tools .map-controls button{background:#fff1d5;color:#5e4b30}
+.source-button{margin-top:8px}.welcome-fineprint{color:#807058}
+@media(orientation:landscape) and (max-height:650px){
+  .event-panel{width:min(850px,calc(100% - 16px));padding:14px 20px}
+  .event-panel .event-layout{grid-template-columns:minmax(0,1fr) minmax(0,1.18fr);gap:19px}
+  .event-panel .options-3{grid-template-columns:1fr;gap:7px}
+  .event-panel .options-3 .choice{min-height:0;padding:8px 9px;gap:7px}
+  .event-panel .choice strong{font-size:12px;line-height:1.5}
+  .event-panel .choice-letter{min-width:22px;height:23px;font-size:11px}
+  .event-panel .choice-prompt{margin-bottom:7px;font-size:12px}
+  .event-panel .choice-footnote{font-size:9px;margin-top:9px}
+  .event-panel .event-scene{font-size:12px;line-height:1.7;margin:0;padding:10px}
+  .event-panel .source-button{margin-top:5px;padding-top:6px}
+}
+@media(prefers-reduced-motion:reduce){.choice:hover:not(:disabled){transform:none}}
