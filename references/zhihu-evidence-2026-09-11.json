@@ -1,0 +1,352 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-09-11",
+  "note": "Only minimal supporting excerpts are retained. Search text is not full text; all summaries are bounded editorial paraphrases. No credentials, comments, avatars or full response payloads are retained here.",
+  "directPageChecks": [
+    {
+      "url": "https://www.zhihu.com/question/630610928/answer/3341365858",
+      "accessedAt": "2026-09-11T06:41:20.1378330Z",
+      "httpStatus": 403,
+      "method": "Unauthenticated HTTPS GET; no retry",
+      "result": "Full text not accessible"
+    },
+    {
+      "url": "https://zhuanlan.zhihu.com/p/2073509281064923587",
+      "accessedAt": "2026-09-11T06:41:20.4707605Z",
+      "httpStatus": 403,
+      "method": "Unauthenticated HTTPS GET; no retry",
+      "result": "Full text not accessible"
+    }
+  ],
+  "records": [
+    {
+      "id": "first_city",
+      "title": "大学生选择第一个行业时,最应该考虑哪些因素?",
+      "author": "小土",
+      "url": "https://www.zhihu.com/question/2069015882525827287/answer/2077318409822401217",
+      "query": "毕业 第一份工作 选择 城市 专业 经验",
+      "accessedAt": "2026-09-11T06:42:28.069Z",
+      "method": "Official Zhihu CLI search zhihu; exact Title / AuthorName / Url / ContentText fields",
+      "sourceKind": "answer",
+      "evidenceLevel": "excerpt",
+      "excerpt": "想当年我找工作的时候就去人才市场找的，一家老家的工厂，一看离家近，还是个工厂，管吃管住，但是在村里啊，我也是服了自己，就这样我还是去了，可是只干了半年，我就干不下去了，只能又回到郑州找工作了。",
+      "returnedTextLength": 390,
+      "returnedTextSha256": "92427305d08d447228139383f8ffc5c2b5dc5b8b352ded744a5abdaf38ace581",
+      "interpretation": "选择第一份工作时，工作地点也意味着未来的生活环境。答主回忆自己先因离家近进入村镇工厂，后来重新回到想长期发展的城市找工作。",
+      "scope": "一位答主对初次择业的回忆；不将任何城市或行业设为统一最优路线",
+      "excerptSegments": [
+        "想当年我找工作的时候就去人才市场找的，一家老家的工厂，一看离家近，还是个工厂，管吃管住，但是在村里啊，我也是服了自己，就这样我还是去了，可是只干了半年，我就干不下去了，只能又回到郑州找工作了。"
+      ]
+    },
+    {
+      "id": "distance_shared",
+      "title": "异地恋的你们是通过什么方法熬过平淡期?",
+      "author": "宏桑",
+      "url": "https://www.zhihu.com/question/559931468/answer/2725697837",
+      "query": "异地恋情侣应该如何规划，才能更顺利地结束异地",
+      "accessedAt": "2026-09-11T06:39:00.708Z",
+      "method": "Official Zhihu CLI search zhihu; exact Title / AuthorName / Url / ContentText fields",
+      "sourceKind": "answer",
+      "evidenceLevel": "excerpt",
+      "excerpt": "除了打电话，视频通话这种\"同步交流\"外，微信主要承担\"异步交流\"的工作。\n……\n另一方面，可以多聊一下你们关于未来的规划，未来在一起的城市，结婚之后理想的生活等；\n……\n那段过程我们的话题是通过一部又一部电视剧串联起来的\n……\n我们各自看完后，再煲电话粥，聊一聊 海萍的困境，宋思明的人品。",
+      "returnedTextLength": 822,
+      "returnedTextSha256": "679c01e9e82d0b6e6cb8df2f267157df68874fe1bf04ac9426a50e3f000295aa",
+      "interpretation": "答主分享异地期间一起追剧、之后通话交流的经历，也建议聊聊未来在哪个城市、希望怎样共同生活。",
+      "scope": "异地相处与未来城市讨论；不推断未回复的动机，不承诺关系结果",
+      "excerptSegments": [
+        "除了打电话，视频通话这种\"同步交流\"外，微信主要承担\"异步交流\"的工作。",
+        "另一方面，可以多聊一下你们关于未来的规划，未来在一起的城市，结婚之后理想的生活等；",
+        "那段过程我们的话题是通过一部又一部电视剧串联起来的",
+        "我们各自看完后，再煲电话粥，聊一聊 海萍的困境，宋思明的人品。"
+      ],
+      "returnedTitle": "异地恋的你们是通过什么方法熬过平淡期? - 知乎"
+    },
+    {
+      "id": "distance_agreement",
+      "title": "怎么样熬过异地恋?",
+      "author": "沈满月",
+      "url": "https://www.zhihu.com/question/630610928/answer/3341365858",
+      "query": "异地恋情侣应该如何规划，才能更顺利地结束异地",
+      "accessedAt": "2026-09-11T06:39:00.708Z",
+      "method": "Official Zhihu CLI search zhihu; exact Title / AuthorName / Url / ContentText fields",
+      "sourceKind": "answer",
+      "evidenceLevel": "excerpt",
+      "excerpt": "1，可以异地恋，但是要有明确的结束异地的计划。两人要商量好异地多久，在什么时候，什么条件下可以结束异地。\n……\n2，异地期间，保持相对规律的见面频率。比如我的异地恋现在基本上一个月见面一次，彼此经济上、时间上都能够负担。",
+      "returnedTextLength": 578,
+      "returnedTextSha256": "c4cf47b7c1b6bf724b792c16d2e48ed743f4179eddc924bffa7c23a0654a8078",
+      "interpretation": "答主建议共同商量异地持续多久、在什么条件下调整安排；分享自己按双方时间和经济承受情况安排见面的做法。",
+      "scope": "个人异地经验；不采用固定见面频率，不把未来规划变成关系成败保证",
+      "excerptSegments": [
+        "1，可以异地恋，但是要有明确的结束异地的计划。两人要商量好异地多久，在什么时候，什么条件下可以结束异地。",
+        "2，异地期间，保持相对规律的见面频率。比如我的异地恋现在基本上一个月见面一次，彼此经济上、时间上都能够负担。"
+      ],
+      "returnedTitle": "怎么样熬过异地恋? - 知乎"
+    },
+    {
+      "id": "family_conversation",
+      "title": "几个异地恋能长久的关键点",
+      "author": "Fanguigui",
+      "url": "https://zhuanlan.zhihu.com/p/56035839",
+      "query": "异地恋情侣应该如何规划，才能更顺利地结束异地",
+      "accessedAt": "2026-09-11T06:39:00.708Z",
+      "method": "Official Zhihu CLI search zhihu; exact Title / AuthorName / Url / ContentText fields",
+      "sourceKind": "article",
+      "evidenceLevel": "excerpt",
+      "excerpt": "最棒的方式：你们和父母一起吃顿饭，聊天，聊你们的日常，聊你们的计划。",
+      "returnedTextLength": 1045,
+      "returnedTextSha256": "62cf3278daa22c78d4ec4b8bf185ef1de6ca90db6b327aeb856e9e6a8a4085ef",
+      "interpretation": "文章建议与父母一起聊聊日常和计划，让家人了解两个人对未来的想法。",
+      "scope": "异地伴侣与家人沟通的观点；不代表所有家庭意见一致，不采用文章对亲密关系的确定性判断",
+      "excerptSegments": [
+        "最棒的方式：你们和父母一起吃顿饭，聊天，聊你们的日常，聊你们的计划。"
+      ]
+    },
+    {
+      "id": "housing_budget",
+      "title": "首次购房时,除了首付和月供,还应准备多少流动资金才合理?",
+      "author": "山水一程",
+      "url": "https://www.zhihu.com/question/2053434591860544663/answer/2053537287204495792",
+      "query": "第一次买房 预算 月供 应急金 怎么选择",
+      "accessedAt": "2026-09-11T06:39:23.099Z",
+      "method": "Official Zhihu CLI search zhihu; exact Title / AuthorName / Url / ContentText fields",
+      "sourceKind": "answer",
+      "evidenceLevel": "excerpt",
+      "excerpt": "所以呢，买房总准备资金 = 首付 + 税费 + 装修家具家电 + 应急备用金",
+      "returnedTextLength": 587,
+      "returnedTextSha256": "6d214d9acd67ac66608d06c16a9cb87fd24c669bd1d140cb19177064fb04bbe3",
+      "interpretation": "答主把购房前的资金准备分为首付、相关税费、装修家电与应急备用金，提醒规划时不要只看首付。",
+      "scope": "只采用支出类别与预留缓冲的思路；不采用地方政策、报价、收入倍数或月供比例",
+      "excerptSegments": [
+        "所以呢，买房总准备资金 = 首付 + 税费 + 装修家具家电 + 应急备用金"
+      ]
+    },
+    {
+      "id": "moving_zones",
+      "title": "零基础小白想开始收纳,第一步该从哪里着手?",
+      "author": "平价居家好物",
+      "url": "https://www.zhihu.com/question/2058147975851927481/answer/2072294990089398206",
+      "query": "第一次租房 搬家 整理 收纳 经验",
+      "accessedAt": "2026-09-11T06:39:25.148Z",
+      "method": "Official Zhihu CLI search zhihu; exact Title / AuthorName / Url / ContentText fields",
+      "sourceKind": "answer",
+      "evidenceLevel": "excerpt",
+      "excerpt": "2.先做分区，再添置收纳工具。高频使用的物品放在随手可拿的位置，换季、备用物品收进深处，分开存放不容易复乱。",
+      "returnedTextLength": 351,
+      "returnedTextSha256": "f43ddffa6dfa71f6dc800785f36e94843dbe4ce6565a0337c6742d1aef89aa08",
+      "interpretation": "答主回顾整理出租屋，建议先做物品分区，把常用物品放在顺手位置，再决定需要添置什么收纳工具。",
+      "scope": "租房整理的个人经验；不采用商品推荐、退租扣款判断或强制丢弃规则",
+      "excerptSegments": [
+        "2.先做分区，再添置收纳工具。高频使用的物品放在随手可拿的位置，换季、备用物品收进深处，分开存放不容易复乱。"
+      ]
+    },
+    {
+      "id": "trial_review",
+      "title": "公司转正的个人总结?",
+      "author": "三叔写作表达",
+      "url": "https://www.zhihu.com/question/1903039495487594990/answer/1931302234961994306",
+      "query": "职场新人 转正述职 汇报 成果 复盘",
+      "accessedAt": "2026-09-11T06:39:24.148Z",
+      "method": "Official Zhihu CLI search zhihu; exact Title / AuthorName / Url / ContentText fields",
+      "sourceKind": "answer",
+      "evidenceLevel": "excerpt",
+      "excerpt": "1.“任务清单” → “价值贡献”\n重点不是你干了啥，而是你干的带来了什么具体好处？（效率提升？成本降低？客户满意？）\n2.“自我视角” → “公司/团队视角”\n 把你的工作和团队目标、公司战略挂钩，证明你是“自己人”。\n3.“过去式总结” → “未来潜力股”\n不仅要回顾，更要清晰展现你未来的规划和对团队的承诺（能贡献啥、到啥程度）。",
+      "returnedTextLength": 863,
+      "returnedTextSha256": "992cd74689192b3ba62a7b60a906853abd9fe27ed50b2c2c6ea7edfe633e0e7c",
+      "interpretation": "答主建议在转正总结中说明工作的具体贡献、与团队目标的关系及下一步计划。",
+      "scope": "转正材料的表达经验；实际证据仍须自己核对，不采用收益数字或录用保证",
+      "excerptSegments": [
+        "1.“任务清单” → “价值贡献”\n重点不是你干了啥，而是你干的带来了什么具体好处？（效率提升？成本降低？客户满意？）\n2.“自我视角” → “公司/团队视角”\n 把你的工作和团队目标、公司战略挂钩，证明你是“自己人”。\n3.“过去式总结” → “未来潜力股”\n不仅要回顾，更要清晰展现你未来的规划和对团队的承诺（能贡献啥、到啥程度）。"
+      ],
+      "returnedTitle": "公司转正的个人总结? - 知乎"
+    },
+    {
+      "id": "results_review",
+      "title": "述职报告该怎么写?写什么?",
+      "author": "人间烟火札",
+      "url": "https://zhuanlan.zhihu.com/p/2066641889428874106",
+      "query": "职场新人 转正述职 汇报 成果 复盘",
+      "accessedAt": "2026-09-11T06:39:24.148Z",
+      "method": "Official Zhihu CLI search zhihu; exact Title / AuthorName / Url / ContentText fields",
+      "sourceKind": "article",
+      "evidenceLevel": "excerpt",
+      "excerpt": "同时，述职也是阶段性的目标对齐过程，能够复盘过往工作偏差，统一团队下一阶段工作方向，规避个人工作与公司战略脱节的问题。\n……\n三是传递深度思考力：流水账式述职只陈述“做了什么”，高分述职会讲清“为什么做、怎么做、收获什么、如何优化”。",
+      "returnedTextLength": 1045,
+      "returnedTextSha256": "4e2ed80cbac4576c22626352c099da5b59f41e504a66c7a584b4201a22175660",
+      "interpretation": "文章建议述职时说明为什么做、怎么做、收获了什么以及如何优化，并通过复盘对齐下一阶段工作方向。",
+      "scope": "述职与项目复盘的观点；不将表达方法等同于晋升、加薪或不可替代性",
+      "excerptSegments": [
+        "同时，述职也是阶段性的目标对齐过程，能够复盘过往工作偏差，统一团队下一阶段工作方向，规避个人工作与公司战略脱节的问题。",
+        "三是传递深度思考力：流水账式述职只陈述“做了什么”，高分述职会讲清“为什么做、怎么做、收获什么、如何优化”。"
+      ],
+      "returnedTitle": "述职报告该怎么写?写什么? - 知乎"
+    },
+    {
+      "id": "savings_diary",
+      "title": "居然记账3921天了,10年的坚持让我收获满满",
+      "author": "玛西子攒钱记",
+      "url": "https://zhuanlan.zhihu.com/p/2077895480873428739",
+      "query": "年轻人 储蓄 应急金 记账 真实经历",
+      "accessedAt": "2026-09-11T06:39:50.303Z",
+      "method": "Official Zhihu CLI search zhihu; exact Title / AuthorName / Url / ContentText fields",
+      "sourceKind": "article",
+      "evidenceLevel": "excerpt",
+      "excerpt": "也正因为坚持记账加深了我对合理消费的观念，我开始更好的利用自己手里的钱，争取用最少的钱让我和先生生活的更好点，当然记账也让自己有了存钱的意识，慢慢地学着“合理”的消费。",
+      "returnedTextLength": 626,
+      "returnedTextSha256": "f45f8fe4a685d29fd1a6ea026d097e5aa31d680f1d47b69411471425069072f3",
+      "interpretation": "作者回忆长期记录收支让自己更留意消费安排，尝试根据手头资金和共同生活的需要作选择。",
+      "scope": "个人记账回忆；不把其买房、买车或副业收入归因为记账，也不设储蓄比例",
+      "excerptSegments": [
+        "也正因为坚持记账加深了我对合理消费的观念，我开始更好的利用自己手里的钱，争取用最少的钱让我和先生生活的更好点，当然记账也让自己有了存钱的意识，慢慢地学着“合理”的消费。"
+      ]
+    },
+    {
+      "id": "shop_location",
+      "title": "对咖啡一窍不通的人要怎么学习做咖啡,然后开一家咖啡店?",
+      "author": "某某某先生",
+      "url": "https://www.zhihu.com/question/31215046/answer/1990210533601875806",
+      "query": "第一次开咖啡店 失败 选址 成本 经验",
+      "accessedAt": "2026-09-11T06:39:51.488Z",
+      "method": "Official Zhihu CLI search zhihu; exact Title / AuthorName / Url / ContentText fields",
+      "sourceKind": "answer",
+      "evidenceLevel": "excerpt",
+      "excerpt": "二店的失败证明了：房租就是买断客户流量的最好方式。\n无论你选择在人群的必经通道上，还是深巷弄堂，有人愿意经过、抵达才是王道。\n……\n问题是我们没有注意观察店铺周边“直径3km”。\n……\n然后，我调整了对于固定成本的看法。\n以前我单纯看支出，现在我会更侧重盈利能力。",
+      "returnedTextLength": 478,
+      "returnedTextSha256": "f88477271b44ca778151da704d00d9fd164d0a866540ba80269be8d0883adb52",
+      "interpretation": "答主回顾咖啡店选址的失误：判断大区域之外，也需要观察店铺周边有哪些可能到店的人，以及固定成本与经营条件。",
+      "scope": "一位经营者对选址的反思；不把客群距离、租金或盈利推演当成通用阈值",
+      "excerptSegments": [
+        "二店的失败证明了：房租就是买断客户流量的最好方式。\n无论你选择在人群的必经通道上，还是深巷弄堂，有人愿意经过、抵达才是王道。",
+        "问题是我们没有注意观察店铺周边“直径3km”。",
+        "然后，我调整了对于固定成本的看法。\n以前我单纯看支出，现在我会更侧重盈利能力。"
+      ],
+      "returnedTitle": "对咖啡一窍不通的人要怎么学习做咖啡,然后开一家咖啡店? - 知乎"
+    },
+    {
+      "id": "portfolio_structure",
+      "title": "AI时代如何积累你的作品集",
+      "author": "高承实",
+      "url": "https://zhuanlan.zhihu.com/p/2056974298716415151",
+      "query": "职场 案例集 作品集 脱敏 分享 项目经验",
+      "accessedAt": "2026-09-11T06:39:52.484Z",
+      "method": "Official Zhihu CLI search zhihu; exact Title / AuthorName / Url / ContentText fields",
+      "sourceKind": "article",
+      "evidenceLevel": "excerpt",
+      "excerpt": "转型者可以创建“学习作品集”，记录你学习新领域的过程、思考、实践和成果。\n……\nSTAR法则是经典的叙事框架：S（Situation）是项目背景，当时面临什么情况；T（Task）是你的任务，你需要解决什么问题？A（Action）是你的行动，你采取了什么方法？R（Result）是最终结果，你达成了什么成果？",
+      "returnedTextLength": 1020,
+      "returnedTextSha256": "d1b8de02bfd65fc766c3911b019a8c3c7e586eabb6340efecdfadb1b9d5c276f",
+      "interpretation": "文章建议作品集记录项目背景、要解决的问题、采取的行动和结果，也可以记录学习新领域时的实践与思考。",
+      "scope": "作品整理方法；不证明第三方案例真实性，不提供公开工作资料的授权，不保证求职成功",
+      "excerptSegments": [
+        "转型者可以创建“学习作品集”，记录你学习新领域的过程、思考、实践和成果。",
+        "STAR法则是经典的叙事框架：S（Situation）是项目背景，当时面临什么情况；T（Task）是你的任务，你需要解决什么问题？A（Action）是你的行动，你采取了什么方法？R（Result）是最终结果，你达成了什么成果？"
+      ],
+      "returnedTitle": "AI时代如何积累你的作品集 - 知乎"
+    },
+    {
+      "id": "pilot_cooperation",
+      "title": "一个人创业,怎么找到第一个靠谱的协作者?",
+      "author": "OPC创业社区",
+      "url": "https://zhuanlan.zhihu.com/p/2063576183871222665",
+      "query": "朋友 创业 合伙 小项目 分工 验证需求",
+      "accessedAt": "2026-09-11T06:40:17.944Z",
+      "method": "Official Zhihu CLI search zhihu; exact Title / AuthorName / Url / ContentText fields",
+      "sourceKind": "article",
+      "evidenceLevel": "excerpt",
+      "excerpt": "一项适合首次协作的任务，至少应该写清五件事：\n1.为什么做：它要验证哪个问题；\n2.已经有什么：资料、草图、代码或访谈记录；\n3.需要交付什么：最终要拿到哪个结果；\n4.什么算完成：双方如何验收；\n5.时间与回报：什么时候交付，采用付费、资源互换还是其他方式。",
+      "returnedTextLength": 920,
+      "returnedTextSha256": "fb32dcc4b0898bb15274d4ccf9d2d2f9d22e6a037b84082f9478928ceb83a6bb",
+      "interpretation": "文章建议先约定一个有明确终点的小协作，写清要验证的问题、已有材料、交付内容、验收方式、时间与回报。",
+      "scope": "小规模协作的方法观点；不采用固定访谈数量、时限或股权结论，不保证需求成立",
+      "excerptSegments": [
+        "一项适合首次协作的任务，至少应该写清五件事：\n1.为什么做：它要验证哪个问题；\n2.已经有什么：资料、草图、代码或访谈记录；\n3.需要交付什么：最终要拿到哪个结果；\n4.什么算完成：双方如何验收；\n5.时间与回报：什么时候交付，采用付费、资源互换还是其他方式。"
+      ]
+    },
+    {
+      "id": "freelance_scope",
+      "title": "自由职业接单,我踩过的5个坑",
+      "author": "梦婷Mengting",
+      "url": "https://zhuanlan.zhihu.com/p/2073509281064923587",
+      "query": "自由职业 接单 需求 范围 修改次数 报价",
+      "accessedAt": "2026-09-11T06:40:18.987Z",
+      "method": "Official Zhihu CLI search zhihu; exact Title / AuthorName / Url / ContentText fields",
+      "sourceKind": "article",
+      "evidenceLevel": "excerpt",
+      "excerpt": "所以，报价、付款节点和正式交付的开始时间，都要提前说清楚。哪怕只是一个小项目，也至少要在文字里确认：项目做什么、多少钱、什么时候付款、付款后从哪一步开始。\n……\n二、明确交付边界\n正式开始之前，要先确认这次交付包含什么、不包含什么。",
+      "returnedTextLength": 1029,
+      "returnedTextSha256": "49c2842e0b3258685a3beb8698172ef9fca6ca4701731f05a6b846deb432608c",
+      "interpretation": "作者回顾接单经历，建议在开始前写清项目内容、报价、付款节点与交付范围，明确包含和不包含的工作。",
+      "scope": "自由接单的个人反思；不采用具体报价、付款比例或合同法律判断",
+      "excerptSegments": [
+        "所以，报价、付款节点和正式交付的开始时间，都要提前说清楚。哪怕只是一个小项目，也至少要在文字里确认：项目做什么、多少钱、什么时候付款、付款后从哪一步开始。",
+        "二、明确交付边界\n正式开始之前，要先确认这次交付包含什么、不包含什么。"
+      ],
+      "returnedTitle": "自由职业接单,我踩过的5个坑 - 知乎"
+    },
+    {
+      "id": "salary_evidence",
+      "title": "各位知友,实习单位拖欠工资怎么办?",
+      "author": "說書人",
+      "url": "https://www.zhihu.com/question/655954623/answer/3500869286",
+      "query": "公司 拖欠工资 保存 工资条 考勤 记录",
+      "accessedAt": "2026-09-11T06:40:20.000Z",
+      "method": "Official Zhihu CLI search zhihu; exact Title / AuthorName / Url / ContentText fields",
+      "sourceKind": "answer",
+      "evidenceLevel": "excerpt",
+      "excerpt": "2.工资条、银行转账记录\n……\n5.考勤记录\n……\n7.电子邮件、短信、微信等通讯记录\n……\n法律咨询：在准备充分的基础上，您可以咨询法律专业人士，了解您的权利和法律途径。",
+      "returnedTextLength": 750,
+      "returnedTextSha256": "12d1f27264f8ae8a3f03de622e85afa2f55bdb39950cdb0fbb6bd6fbb0ce93af",
+      "interpretation": "答主在讨薪经历的讨论中列举工资条、银行转账、考勤与工作沟通等材料，并建议向法律专业人士咨询。",
+      "scope": "只采用材料梳理与寻求专业咨询的思路；不推定劳动关系、证据效力、时效、金额或处理结果",
+      "excerptSegments": [
+        "2.工资条、银行转账记录",
+        "5.考勤记录",
+        "7.电子邮件、短信、微信等通讯记录",
+        "法律咨询：在准备充分的基础上，您可以咨询法律专业人士，了解您的权利和法律途径。"
+      ],
+      "returnedTitle": "各位知友,实习单位拖欠工资怎么办? - 知乎"
+    },
+    {
+      "id": "leave_boundary",
+      "title": "离线休息权",
+      "author": "路明非",
+      "url": "https://zhuanlan.zhihu.com/p/2025343635403622197",
+      "query": "休假 不看工作消息 真正休息 经历",
+      "accessedAt": "2026-09-11T06:41:01.275Z",
+      "method": "Official Zhihu CLI search zhihu; exact Title / AuthorName / Url / ContentText fields",
+      "sourceKind": "article",
+      "evidenceLevel": "excerpt",
+      "excerpt": "说实话，我能“硬气”起来，有一个前提——我有一定的经济储备。房贷还了一半，存款够撑半年，所以我不怕失业。\n但很多人没有这个底气。\n……\n休假的时候，真的休假。不带电脑，不查邮件，提前跟所有人说好，有事打电话。",
+      "returnedTextLength": 1091,
+      "returnedTextSha256": "0b3894b181862c7995b609337c8494904aaf39051b90a7e6918e1134a466169f",
+      "interpretation": "作者回顾调整下班和休假时处理工作消息的习惯，提前说明紧急事项的联系办法，也承认经济储备影响自己的选择空间。",
+      "scope": "一位作者自述的离线安排；未独立证实该经历，不作为法定权利说明或要求读者一律不回复",
+      "excerptSegments": [
+        "说实话，我能“硬气”起来，有一个前提——我有一定的经济储备。房贷还了一半，存款够撑半年，所以我不怕失业。\n但很多人没有这个底气。",
+        "休假的时候，真的休假。不带电脑，不查邮件，提前跟所有人说好，有事打电话。"
+      ],
+      "returnedTitle": "离线休息权 - 知乎"
+    },
+    {
+      "id": "mentor_guidance",
+      "title": "职场怎么正确带新人?",
+      "author": "墨鱼Zoka",
+      "url": "https://www.zhihu.com/question/501132838/answer/2042303091882594956",
+      "query": "职场 带新人 导师 分享 经验 教学相长",
+      "accessedAt": "2026-09-11T06:41:04.217Z",
+      "method": "Official Zhihu CLI search zhihu; exact Title / AuthorName / Url / ContentText fields",
+      "sourceKind": "answer",
+      "evidenceLevel": "excerpt",
+      "excerpt": "除了给到文档和操作手册以外，有一些工作内容和流程需要导师手把手进行示范，这个时候千万不要一言不发地闷头示范，而是要遵循“带教16字方针”——我说你听、我做你看、你做我看、你说我听。\n……\n首先导师要和新人说清楚任务的基本信息",
+      "returnedTextLength": 1019,
+      "returnedTextSha256": "955d1fc04446273f9d67120a872507f1ce2bee353e927ffebeeb925ab6cb9957",
+      "interpretation": "答主建议带新人时先讲清任务，示范操作，再让新人尝试并说出自己的理解。",
+      "scope": "带教方法的观点；不采用心理学分类、引文归属或建立信任的效果保证",
+      "excerptSegments": [
+        "除了给到文档和操作手册以外，有一些工作内容和流程需要导师手把手进行示范，这个时候千万不要一言不发地闷头示范，而是要遵循“带教16字方针”——我说你听、我做你看、你做我看、你说我听。",
+        "首先导师要和新人说清楚任务的基本信息"
+      ],
+      "returnedTitle": "职场怎么正确带新人? - 知乎"
+    }
+  ],
+  "excerptConvention": "Multiple retained passages are separated with an explicit ellipsis; each excerptSegments entry is verbatim from the returned search text. They are not asserted to form a continuous paragraph."
+}

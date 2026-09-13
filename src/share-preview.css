@@ -1,0 +1,48 @@
+/* One scrollable reading surface, with controls outside its scrolling area. */
+dialog.share-dialog{
+  width:min(1080px,calc(100vw - 32px));height:min(920px,calc(100dvh - 32px));
+  max-width:none;max-height:calc(100dvh - 32px);padding:0;overflow:hidden;
+  background:#faf5e6;color:#344d41;border:2px solid #c2ad80;border-radius:8px;
+  box-shadow:0 24px 90px #17332870;
+}
+.share-dialog #dialog-content{height:100%;min-height:0;}
+.share-dialog .dialog-close{
+  position:absolute;top:17px;right:17px;float:none;margin:0;width:36px;height:36px;
+  padding:5px;z-index:3;border:1px solid #b1b89d;box-shadow:none;
+  border-radius:50%;background:#faf5e6;color:#49634f;
+}
+.share-view{height:100%;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr) auto;--share-ratio:4 / 9;}
+.share-header{display:flex;align-items:center;gap:20px;padding:18px 70px 16px 24px;border-bottom:1px solid #dfd6bf;}
+.share-dialog .share-header h2{font-size:23px;line-height:1.4;letter-spacing:.04em;margin:0;flex:1;}
+.share-zoom{flex:none;min-height:36px;padding:7px 15px;background:#edf0e1;border:1px solid #a9b89b;border-radius:5px;color:#405f46;font:500 13px/1.3 "Microsoft YaHei",sans-serif;cursor:pointer;}
+.share-viewport{min-height:0;min-width:0;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable both-edges;padding:22px;background:#e7eade;scrollbar-color:#879b7b #e7eade;}
+.share-image-button{display:block;width:min(100%,800px);height:auto;margin:0 auto;padding:0;border:0;border-radius:5px;background:transparent;cursor:zoom-out;touch-action:pan-y pinch-zoom;}
+.share-dialog .share-preview{display:block;width:100%;max-width:none;height:auto;max-height:none;margin:0;border-radius:5px;image-rendering:auto;box-shadow:0 6px 24px #344b3b26;user-select:none;}
+.share-view[data-zoom="fit"] .share-image-button{width:auto;height:100%;max-width:100%;aspect-ratio:var(--share-ratio);cursor:zoom-in;}
+.share-view[data-zoom="fit"] .share-preview{width:100%;height:100%;object-fit:contain;box-shadow:none;}
+.share-footer{padding:12px 24px 17px;background:#faf5e6;border-top:1px solid #d3d7c3;box-shadow:0 -5px 18px #3549380a;}
+.share-dialog .share-caption{margin:0 0 10px;text-align:left;font:12px/1.5 "Microsoft YaHei",sans-serif;color:#64715d;overflow-wrap:anywhere;}
+.share-dialog .share-actions{display:flex;gap:12px;justify-content:flex-end;margin:0;}
+.share-dialog .share-actions>*{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:152px;padding:10px 20px;font-size:14px;line-height:1.4;white-space:normal;text-align:center;}
+.share-dialog :is(.share-zoom,.share-image-button,.share-viewport,.share-actions>*):focus-visible{outline:3px solid #2a7454;outline-offset:3px;}
+.share-dialog .share-header h2:focus{outline:none;}
+.share-dialog .share-loading{grid-template-rows:auto 1fr;}
+.share-dialog #share-progress{align-self:center;text-align:center;padding:24px;font-size:14px;color:#526f55;}
+@media(max-height:550px){
+  dialog.share-dialog{width:calc(100vw - 24px);height:calc(100dvh - 16px);max-height:calc(100dvh - 16px);}
+  .share-header{padding:10px 58px 10px 16px;gap:12px;}
+  .share-dialog .share-header h2{font-size:18px;}
+  .share-dialog .dialog-close{width:32px;height:32px;right:12px;top:11px;}
+  .share-zoom{min-height:32px;font-size:12px;padding:6px 11px;}
+  .share-viewport{padding:12px;}
+  .share-footer{padding:7px 16px 9px;}
+  .share-dialog .share-caption{font-size:11px;margin-bottom:5px;}
+  .share-dialog .share-actions>*{min-height:38px;min-width:136px;padding:7px 15px;font-size:13px;}
+}
+@media(max-width:540px){
+  .share-header{padding-left:14px;gap:9px;flex-wrap:wrap;}
+  .share-dialog .share-header h2{font-size:18px;flex-basis:100%;}
+  .share-footer{padding:10px 12px 12px;}
+  .share-dialog .share-actions{gap:8px;}
+  .share-dialog .share-actions>*{flex:1;min-width:0;padding:9px 10px;font-size:13px;}
+}

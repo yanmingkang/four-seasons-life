@@ -38,5 +38,8 @@ test('seasonal scenery, compact place signs and eight cinematic cells match even
     assert.equal(stationName(event),event.location||event.title);
   });
   assert.deepEqual(SEASONS.map((_,s)=>EVENTS.filter(e=>e.season===s).length),[10,10,10,10]);
-  assert.deepEqual(EVENTS.flatMap((e,i)=>cinematicStation(e,i)?[i+1]:[]),[6,11,13,15,18,22,27,31]);
+  assert.deepEqual(EVENTS.flatMap((e,i)=>cinematicStation(e,i)?[i+1]:[]),[6,8,11,15,18,22,27,31]);
+  assert.equal(cinematicStation(EVENTS[12],12),false,'cell 13 has no movie pennant');
+  assert.equal(cinematicStation(EVENTS[7],1),true,'film identity does not depend on a short-route position');
+  assert.equal(cinematicStation({...EVENTS[12],cinematicId:null},5),false,'old positional fallbacks cannot revive a movie pennant');
 });

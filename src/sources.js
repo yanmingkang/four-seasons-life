@@ -1,3 +1,4 @@
+import {SOURCE_ADDITIONS} from './source-additions-2026-09-11.js';
 // Initial eight entries: authorized Zhihu CLI, 2026-09-08.
 // Later entries carry their own evidence level; see references/practice-source-audit-2026-09-10.md.
 // These are discussion sources, not verification of the fictional outcomes or game numbers.
@@ -91,6 +92,62 @@ export const SOURCES = {
     author: '民谣如诗', url: 'https://www.zhihu.com/question/2064314688725431185/answer/2065089826932765626',
     idea: '获客往往要经历展示作品、建立信任和持续积累。游戏借用这一讨论主题，不采用回答中的收入预测或固定时间承诺。',
     query: '自由职业 如何获得 第一个客户', scope: '获客需要积累的观点'
-  }
+  },
+  care_coordination: {
+    id:'care_coordination', title:'在至亲的亲人住院一周的时候，你工作比较忙，是选择请护工还是请假跟家人轮流照顾？',
+    author:'萧澄', url:'https://www.zhihu.com/question/1923012989029680504/answer/2071259121635140487',
+    idea:'答主回忆家人住院时，因工作、接送孩子与做饭都有时间限制，家属一起商量陪护、请假和其他生活事务的安排。',
+    query:'家人生病 陪护 工作 分工 请假', scope:'一位答主的家庭协调经历；不采用诊疗过程、费用、护理质量或服务推荐',
+    evidence:'官方 CLI 返回作者、回答直链与内容片段；未读取完整原文', evidenceLevel:'excerpt', checkedAt:'2026-09-11'
+  },
+  care_budget: {
+    id:'care_budget', title:'父母需要照护，家人该不该停工：先把这7笔账算清',
+    author:'光与萤火', url:'https://zhuanlan.zhihu.com/p/2071709396963422507',
+    idea:'文章建议把工作时间、接送与家务等任务一起列清，确认各人的承担时段，并为临时无法到场留出替补安排。',
+    query:'家人生病 陪护 工作 分工 请假', scope:'只采用时间盘点、家庭分工和替补思路；不采用假期权利、医疗操作或服务适用性结论',
+    evidence:'官方 CLI 返回作者、文章链接与内容片段；未读取完整原文', evidenceLevel:'excerpt', checkedAt:'2026-09-11'
+  },
+  handover_checklist: {
+    id:'handover_checklist', title:'马上离职了，工作交接上应该注意什么呢？',
+    author:'侃大山', url:'https://www.zhihu.com/question/1928749704344221413/answer/1930915999596643377',
+    idea:'答主把交接前准备分为已完成、进行中和待办事项，记录进度、时间节点与相关人，也整理工作过程中的经验供接手者沟通核对。',
+    query:'离职 工作交接 清单 时间 安排', scope:'离职已确定后的交接准备；不用于判断补偿、解除是否合法或要求传递个人账号密码',
+    evidence:'官方 CLI 返回作者、回答直链与内容片段；未读取完整原文', evidenceLevel:'excerpt', checkedAt:'2026-09-11'
+  },
+  listening: {
+    id:'listening', title:'当伴侣向你倾诉问题时，如何提供有效的「情绪价值」？',
+    author:'知乎用户h0Ggrs', url:'https://www.zhihu.com/question/617118379/answer/3174965837',
+    idea:'答主建议倾诉时先积极倾听，试着理解感受与需求，不急着给指导或替对方解决问题。',
+    query:'伴侣 倾听 情绪 不急着 解决问题', scope:'一位答主的倾听观点；不把对方一概当成只需要安慰，也不保证倾听能解决现实问题',
+    evidence:'官方 CLI 返回显示作者、回答直链与内容片段；未读取完整原文', evidenceLevel:'excerpt', checkedAt:'2026-09-11'
+  },
+  offscreen: {
+    id:'offscreen', title:'下班后除了刷手机还能干什么？',
+    author:'沐梓舒', url:'https://www.zhihu.com/question/1931653326077927680/answer/2056882400681109178',
+    idea:'答主列举散步、做饭、手作、与朋友喝茶和记录温暖小事等下班活动，为空闲时间提供不同选择。',
+    query:'下班 放松 不看手机 休息', scope:'活动灵感清单；不采用生理效果、性格变化或必须完成的自律要求',
+    evidence:'官方 CLI 返回作者、回答直链与内容片段；未读取完整原文', evidenceLevel:'excerpt', checkedAt:'2026-09-11'
+  },
+  microbreak: {
+    id:'microbreak', title:'越休息越累的人，都做错了这件事（不是刷手机）',
+    author:'KnowYourself', url:'https://zhuanlan.zhihu.com/p/1981656989181425150',
+    idea:'文章列举离开屏幕看看窗外、与同事短聊、认真喝一杯热饮，以及用做饭、整理房间等活动完成下班后的切换。',
+    query:'下班 放松 不看手机 休息', scope:'只采用微休息和生活切换的活动建议；不复述神经机制、固定休息频率或健康效果',
+    evidence:'官方 CLI 返回作者、文章链接与内容片段；未读取完整原文', evidenceLevel:'excerpt', checkedAt:'2026-09-11'
+  },
+  distance_planning: {
+    id:'distance_planning', title:'异地恋情侣应该如何规划，才能更顺利地结束异地？',
+    author:'作者待核对', url:'https://www.zhihu.com/question/1985667502030726023/answer/1986010474861577107',
+    idea:'可见回答片段讨论共同核对城市、工作、生活成本与时间安排，并提前商量居住预算及工作地点。',
+    query:'异地恋 工作 城市 规划 沟通', scope:'伴侣的共同规划思路；不采用文中举例时限，不把迁移视为必须妥协或关系成功保证',
+    evidence:'官方 CLI 返回回答直链与内容片段，但作者字段为空；未读取完整原文', evidenceLevel:'author-pending', checkedAt:'2026-09-11', archived:true
+  },
+  ...SOURCE_ADDITIONS
 };
+// Derive evidence states from the source itself, including old saved references.
+// A new named replacement must never silently upgrade an older source ID.
+export const sourceEvidenceLevel=source=>source?.evidenceLevel??(
+  source?.sourceKind==='question'&&source.evidence?.startsWith('仅提问')?'topic-only':
+  !source?.author||source.author==='作者待核对'?'author-pending':
+  source.evidence?.startsWith('公开搜索返回正文')?'indexed-text':'excerpt');
 export const SOURCE_NOTE = '剧情为综合改编，资金与情绪变化是游戏规则；知乎原文提供讨论背景，不代表作者经历了本局事件或认可本局结算。';

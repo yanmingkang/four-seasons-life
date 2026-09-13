@@ -26,6 +26,12 @@ const server=http.createServer(async(req,res)=>{
   try {
     const url=new URL(req.url,'http://127.0.0.1');
     if(url.pathname==='/api/health') return send(res,200,{ok:true,game:'four-seasons-life'});
+    // OAuth only runs on the registered public HTTPS deployment, not this
+    // loopback developer preview. Never copy production keys into local JS.
+    if(url.pathname==='/api/auth/status') {
+      if(req.method!=='GET')return send(res,405,{error:'只支持读取'});
+      return send(res,200,{enabled:false,provider:'zhihu',reason:'public_https_required',callbackUrl:'https://zhihu-four-seasons.pages.dev/api/auth/zhihu/callback'});
+    }
     if(url.pathname==='/api/ai/status') {
       if(req.method!=='GET') return send(res,405,{error:'只支持读取'});
       const cli=process.env.ZHIHU_CLI_PATH || path.join(process.env.LOCALAPPDATA||'', 'ZhihuCLI','current','zhihu-cli.exe');
@@ -57,7 +63,7 @@ const server=http.createServer(async(req,res)=>{
       if(!s) return send(res,400,{error:'未知的经验主题'});
       const cached=cache.get(s.id);
       if(cached && Date.now()-cached.at<15*60*1000) return send(res,200,{mode:'cache',items:cached.items});
-      const fallback={mode:'curated',message:'实时检索暂不可用，仍可查看本事件已核对的知乎来源。',items:[{title:s.title,author:s.author,url:s.url,excerpt:s.idea}]};
+      const fallback={mode:'curated',message:'实时检索暂不可用，仍可查看本事件已整理的知乎参考。',items:[{title:s.title,author:s.author,url:s.url,excerpt:s.idea}]};
       if(Date.now()-lastFetch<3000) return send(res,200,fallback);
       lastFetch=Date.now();
       const cli=process.env.ZHIHU_CLI_PATH || path.join(process.env.LOCALAPPDATA||'', 'ZhihuCLI','current','zhihu-cli.exe');

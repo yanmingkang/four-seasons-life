@@ -30,16 +30,18 @@ test('journey collection counts unique sources only from actually settled histor
   const state=choose(land(newGame('full'),1),0);
   const collection=collectJourneySources(state.history);
   assert.equal(collection.length,1);
-  assert.equal(collection[0].id,'skills');
+  assert.equal(collection[0].id,EVENTS[0].sources[0]);
   assert.equal(collection[0].events[0].title,EVENTS[0].title);
   assert.equal(collection[0].events[0].turn,1);
   assert.deepEqual(collectJourneySources([...state.history,...state.history]),collection);
-  const repeated=collectJourneySources([...state.history,{eventId:'cell-02',turn:2,title:'实际第二页',sources:['skills','teamwork','missing']}]);
+  const repeated=collectJourneySources([...state.history,{eventId:'cell-02',turn:2,title:'实际第二页',sources:[EVENTS[0].sources[0],'teamwork','missing']}]);
   assert.equal(repeated.length,2);
   assert.equal(repeated[0].events.length,2);
   assert.equal(repeated[1].events.length,1);
   assert.doesNotMatch(journeySourceBookMarkup(state.history),/8 篇|40 篇/);
-  assert.match(journeySourceBookMarkup(state.history),/1 篇相关原文/);
+  assert.match(journeySourceBookMarkup(state.history),/1 条独立来源/);
+  assert.match(journeySourceBookMarkup(state.history),/不是每格一篇独立案例/);
+  assert.match(journeySourceBookMarkup(state.history),/仅核对搜索片段/);
 });
 
 test('experience echo uses a mapped author and source paraphrase without inventing quotation or real-event proof',()=>{

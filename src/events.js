@@ -9,7 +9,7 @@ export const SEASONS = [
 
 // Adapted fictional scenes, not quotations or statistical conclusions from Zhihu.
 // All amounts are yuan. Unknown real-world results are never sampled as a claimed success rate.
-const CINEMATIC_CELLS = new Set([6,11,13,15,18,22,27,31]);
+const CINEMATIC_CELLS = new Set([6,8,11,15,18,22,27,31]);
 const O=(label,money,mood,exp,result,lesson,style='evidence',extra={})=>({label,money,mood,exp,result,lesson,style,...extra});
 const E=(number,location,title,kind,scene,prompt,sources,options)=>({
   id:`cell-${String(number).padStart(2,'0')}`,number,season:Math.floor((number-1)/10),location,title,kind,scene,prompt,sources,options,

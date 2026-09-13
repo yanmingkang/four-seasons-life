@@ -4,17 +4,22 @@ import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
 import fs from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import {REFERENCE_IMAGES} from '../src/reference-art-manifest.js';
+import {CINEMATIC_MANIFEST} from '../src/cinematic-manifest.js';
 
 const digest = value => createHash('sha256').update(value).digest();
 const loopback = address => ['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(address);
 const API_METHODS = new Map([['/api/health', 'GET'], ['/api/ai/status', 'GET'], ['/api/narrate', 'POST'], ['/api/experience', 'GET'], ['/api/practice', 'POST']]);
-// Only the eight commissioned clips and their optional covers are public assets.
-// Do not open the directory: production builds also copy its internal README.
-const CINEMATIC_STATIC_PATHS = new Set(['06','11','13','15','18','22','27','31']
-  .flatMap(cell => ['mp4','webm','jpg','webp'].map(extension => `/cinematics/cell-${cell}.${extension}`)));
-// Expose only the shipped transparent tree and life-landmark atlases, never art sources,
-// delivery notes, alternate generations or an entire directory.
-const ART_STATIC_PATHS = new Set(['/art/season-trees-v2.png', '/art/life-landmarks-v1.png']);
+// Keep legacy exact paths for compatibility, plus only the current manifest's
+// eight films and covers. Never expose delivery directories or internal notes.
+const CINEMATIC_STATIC_PATHS = new Set([
+  ...['06','11','13','15','18','22','27','31']
+    .flatMap(cell => ['mp4','webm','jpg','webp'].map(extension => `/cinematics/cell-${cell}.${extension}`)),
+  ...CINEMATIC_MANIFEST.flatMap(item=>[item.src,item.poster]),
+]);
+// Only the shipped atlases and the exact 55 in-game reference images. Do not
+// expose the source DOCX, delivery notes, other artwork, or the whole directory.
+const ART_STATIC_PATHS = new Set(['/art/season-trees-v2.png', '/art/life-landmarks-v1.png',...REFERENCE_IMAGES.map(image=>image.url)]);
 const SECURITY_HEADERS = {
   'Content-Security-Policy': "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; worker-src 'self' blob:; media-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
   'X-Content-Type-Options': 'nosniff', 'X-Frame-Options': 'DENY',

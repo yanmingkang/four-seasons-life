@@ -24,3 +24,9 @@ auth.json
 *.bak
 .DS_Store
 Thumbs.db
+
+# Cloud hosting secrets, generated releases, and local Worker state.
+.dev.vars
+.dev.vars.*
+.wrangler/
+.cloud-release/

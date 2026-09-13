@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {narrationKey} from '../src/ai-client.js';
-import {welcomeMarkup,eventMarkup,feedbackMarkup,compactScene} from '../src/presentation.js';
+import {welcomeMarkup,resumePromptMarkup,eventMarkup,feedbackMarkup,compactScene} from '../src/presentation.js';
 import {summaryChart} from '../src/resource-ui.js';
 import {newGame,land,choose,snapshot} from '../src/engine.js';
 import {EVENTS} from '../src/events.js';
@@ -15,8 +15,92 @@ test('client narration cache distinguishes rules, names and talents without tran
 test('welcome exposes initial resources and safely escapes player text',()=>{
   const welcome=welcomeMarkup({name:'"><img src=x onerror=alert(1)>',talent:'defense'},null);
   assert.ok(!welcome.includes('<img src=x'));assert.ok(welcome.includes('&lt;img'));assert.ok(welcome.includes('5,000'));assert.ok(welcome.includes('40 站'));
-  assert.ok(welcome.includes('把知乎经验，走成自己的四季。'));assert.ok(welcome.includes('田园三选版 · v4'));
+  assert.ok(welcome.includes('把知乎经验，走成自己的四季。'));assert.ok(welcome.includes('3D 田园版 · v4'));
 });
+function nicknameInput(markup){
+  const input=markup.match(/<input\b[^>]*\bid="character-name"[^>]*>/)?.[0];
+  assert.ok(input,'the welcome form contains its nickname input');
+  return input;
+}
+
+test('empty or missing setup names leave the welcome nickname blank with an optional player-facing prompt',()=>{
+  for(const setup of [{name:'',talent:'defense'},{name:undefined,talent:'defense'},{talent:'defense'}]){
+    const input=nicknameInput(welcomeMarkup(setup,null));
+    assert.match(input,/\bvalue=""/);
+    assert.match(input,/\bplaceholder="填写你的昵称（选填）"/);
+    assert.doesNotMatch(input,/\b(?:value|placeholder)="(?:刘看山|undefined|null)"/);
+  }
+});
+
+test('the welcome nickname preserves a custom draft and escapes attribute-breaking player text',()=>{
+  const input=nicknameInput(welcomeMarkup({name:'小雨的四季',talent:'defense'},null));
+  assert.match(input,/\bvalue="小雨的四季"/);
+  const escaped=nicknameInput(welcomeMarkup({name:'小雨"<&\'的旅程',talent:'defense'},null));
+  assert.match(escaped,/\bvalue="小雨&quot;&lt;&amp;&#39;的旅程"/);
+  assert.doesNotMatch(escaped,/<script|onerror=|onfocus=/);
+});
+
+test('an existing journey does not add a homepage resume button or overwrite a separate new-game nickname',()=>{
+  const saved={game:snapshot(newGame('full',{name:'旧旅程玩家'})),seconds:36};
+  const beforeSaved=structuredClone(saved);
+  for(const name of ['',undefined,'新旅程玩家']){
+    const setup={name,talent:'optimistic'},beforeSetup=structuredClone(setup);
+    const markup=welcomeMarkup(setup,saved),input=nicknameInput(markup);
+    assert.equal(input.match(/\bvalue="([^"]*)"/)?.[1],name??'');
+    assert.doesNotMatch(input,/旧旅程玩家/);
+    assert.doesNotMatch(markup,/id="resume"/);
+    assert.deepEqual(setup,beforeSetup);
+    assert.deepEqual(saved,beforeSaved);
+  }
+});
+
+test('the welcome page has one journey entry with or without a saved game',()=>{
+  const saved={game:snapshot(newGame('full',{name:'旧旅程玩家'})),seconds:36};
+  for(const record of [undefined,null,saved]){
+    const markup=welcomeMarkup({name:'',talent:'defense'},record);
+    assert.equal((markup.match(/<button\b/g)||[]).length,1);
+    assert.equal((markup.match(/id="start-full"/g)||[]).length,1);
+    assert.match(markup,/走进我的四季/);
+    assert.doesNotMatch(markup,/id="(?:start-demo|start-sample|resume)"/);
+    assert.equal((markup.match(/type="radio"/g)||[]).length,3,'talent choices remain intact');
+    assert.match(markup,/value="defense" checked/);
+    assert.match(nicknameInput(markup),/value=""/);
+    assert.match(markup,/5,000/);
+  }
+});
+
+test('resume confirmation displays the saved player and actual settled count without mutating the state',()=>{
+  const game=choose(land(newGame('full',{name:'旧旅程玩家'}),2),0),before=structuredClone(game);
+  const markup=resumePromptMarkup(game);
+  assert.match(markup,/<h2 id="resume-heading">你的旅程还在这里<\/h2>/);
+  assert.match(markup,/<strong>旧旅程玩家<\/strong>/);
+  assert.match(markup,/<b>1<\/b> 段经历/);
+  assert.match(markup,/id="resume"[^>]*>继续上次旅程<\/button>/);
+  assert.match(markup,/id="start-new-journey"[^>]*>开启新旅程<\/button>/);
+  assert.equal((markup.match(/<button\b/g)||[]).length,2);
+  assert.match(markup,/开启新旅程将替换当前存档/);
+  assert.deepEqual(game,before);
+});
+
+test('resume confirmation escapes saved nicknames and uses memory wording for either ending',()=>{
+  for(const ended of ['complete','mood']){
+    const state={...newGame('full'),name:'旧玩家"<&\'的旅程',turn:7,ended};
+    const before=structuredClone(state),markup=resumePromptMarkup(state);
+    assert.match(markup,/<strong>旧玩家&quot;&lt;&amp;&#39;的旅程<\/strong>/);
+    assert.match(markup,/<b>7<\/b> 段经历/);
+    assert.match(markup,/id="resume"[^>]*>翻开上次回忆<\/button>/);
+    assert.doesNotMatch(markup,/继续上次旅程|<script|onerror=/);
+    assert.match(markup,/开启新旅程将替换当前存档/);
+    assert.deepEqual(state,before);
+  }
+  for(const turn of [undefined,-1,Infinity,NaN,'<img src=x onerror=alert(1)>']){
+    const markup=resumePromptMarkup({name:'',turn});
+    assert.match(markup,/<strong>旅人<\/strong>/);
+    assert.match(markup,/<b>0<\/b> 段经历/);
+    assert.doesNotMatch(markup,/<img|onerror=|undefined|NaN|Infinity/);
+  }
+});
+
 test('all 40 event cards offer exactly three distinct actions without resource or outcome spoilers',()=>{
   assert.equal(EVENTS.length,40);
   for(const event of EVENTS){

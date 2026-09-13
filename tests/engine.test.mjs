@@ -10,7 +10,7 @@ const best=s=>s.active.options.map((o,index)=>({index,p:previewChoice(s,o)})).fi
 
 test('40 authored places have complete resources, sources, short locations and eight cinematic hooks',()=>{
   assert.equal(EVENTS.length,40); assert.equal(new Set(EVENTS.map(e=>e.id)).size,40);
-  assert.deepEqual(EVENTS.filter(e=>e.cinematicId).map(e=>e.number),[6,11,13,15,18,22,27,31]);
+  assert.deepEqual(EVENTS.filter(e=>e.cinematicId).map(e=>e.number),[6,8,11,15,18,22,27,31]);
   assert.deepEqual(EVENTS.filter(e=>e.golden).map(e=>e.number),[10,20,30]);
   for(const [i,e] of EVENTS.entries()) {
     assert.equal(e.number,i+1); assert.equal(e.season,Math.floor(i/10));
@@ -25,7 +25,8 @@ test('40 authored places have complete resources, sources, short locations and e
       assert.doesNotMatch([e.prompt,o.label,o.description].join(' '),/[+−-]\s*\d|\d+\s*(?:元|点|%|情绪|专业)|归零|提前结束|上限增加|恢复到上限/);
     }
   }
-  assert.equal(EVENTS[7].options.length,3); assert.equal(EVENTS[7].cinematicId,null);
+  assert.equal(EVENTS[7].options.length,3); assert.equal(EVENTS[7].cinematicId,'cell-08');
+  assert.equal(EVENTS[12].options.length,3); assert.equal(EVENTS[12].cinematicId,null);
 });
 
 test('routes are immutable and every event index exists',()=>{

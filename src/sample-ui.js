@@ -12,12 +12,12 @@ const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;
 export function mountSample(container,{onClose=()=>{},onCollected=()=>{},storage=null}={}){
   let state=createSampleState(),session=null,stopPractice=null,disposed=false,step='choice';
   function chrome(stage,body){
-    container.innerHTML=`<section class="sample-room" data-sample-stage="${stage}"><div class="sample-heading"><span class="tiny-label">AI 互动样板 · 独立预设情境</span><small>不覆盖四季存档</small></div><ol class="sample-steps" aria-label="体验步骤">${['遇见难题','试着说一句','经验与方法'].map((title,i)=>`<li ${i===['choice','practice','lesson'].indexOf(stage)?'aria-current="step"':''}><span>${i+1}</span>${title}</li>`).join('')}</ol>${body}</section>`;
+    container.innerHTML=`<section class="sample-room" data-sample-stage="${stage}"><div class="sample-heading"><span class="tiny-label">AI 沟通陪练 · 独立预设情境</span></div><ol class="sample-steps" aria-label="体验步骤">${['遇见难题','试着说一句','经验与方法'].map((title,i)=>`<li ${i===['choice','practice','lesson'].indexOf(stage)?'aria-current="step"':''}><span>${i+1}</span>${title}</li>`).join('')}</ol>${body}</section>`;
     container.closest('dialog')?.scrollTo({top:0});
   }
   function showChoice(){
     step='choice';chrome('choice',`<div class="sample-scene" aria-hidden="true"><img src="/characters/idle.gif" alt=""/><span class="sample-message">项目群 · 一条新消息<br><b>“延期的问题，得请你解释一下。”</b></span><span class="sample-record">时间线<br>待核对</span></div>${eventMarkup(state)}<p class="sample-note">约 1–2 分钟，随时可退出。虚构同事，不是知乎答主本人。</p>`);
-    container.querySelector('.panel-topline .tiny-label').textContent='第13格片段 · 非整局通关';
+    container.querySelector('.panel-topline .tiny-label').textContent='第13格 · 独立练习';
     container.querySelectorAll('[data-choice]').forEach(button=>button.addEventListener('click',()=>{
       if(disposed||step!=='choice')return;state=createSampleState(Number(button.dataset.choice));showInvitation();
     }));
@@ -38,7 +38,7 @@ export function mountSample(container,{onClose=()=>{},onCollected=()=>{},storage
   function showLesson(){
     if(disposed||step==='lesson')return;stopPractice?.();stopPractice=null;step='lesson';
     const record=state.history.at(-1),card=makeMethodCard(record,session);
-    chrome('lesson',`<h2>别人走过的路，留给你一点参考。</h2>${zhihuEchoMarkup(record)}${methodCardMarkup(card)}<div class="sample-actions"><button class="primary" id="sample-collect">收下这条方法</button><button class="secondary" id="sample-home">回到四季首页 →</button></div><p class="sample-note" id="sample-save-status" role="status">点击收下，才会在本浏览器保存这条提醒与选择；不保存聊天。</p>`);
+    chrome('lesson',`<h2>别人走过的路，留给你一点参考。</h2>${zhihuEchoMarkup(record)}${methodCardMarkup(card)}<div class="sample-actions"><button class="primary" id="sample-collect">收下这条方法</button><button class="secondary" id="sample-home">回到四季首页 →</button></div><p class="sample-note" id="sample-save-status" role="status"></p>`);
     container.querySelector('#sample-collect').onclick=()=>{
       let ok=false;try{ok=collectMethodCard(storage??globalThis.localStorage,card);}catch{}
       container.querySelector('#sample-save-status').textContent=ok?'已收好。首页的“我的方法卡”可以再次查看。':'浏览器暂时无法保存。方法仍显示在这里，可以自行记下。';

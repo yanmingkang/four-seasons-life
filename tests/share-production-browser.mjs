@@ -16,7 +16,7 @@ import { SAVE_VERSION } from '../src/engine.js';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const out = path.join(root, 'test-results');
 await fs.mkdir(out, { recursive: true });
-const forbiddenPorts = new Set([4173, 4174, 4175, 20491]);
+const forbiddenPorts = new Set([4173, 4174, 4175, 20491, 36336]);
 async function freePort() {
   const probe = net.createServer(); probe.listen(0, '127.0.0.1'); await once(probe, 'listening');
   const port = probe.address().port; await new Promise(resolve => probe.close(resolve));
@@ -31,7 +31,7 @@ let childOutput = '', childFailure = '';
 child.stdout.on('data', chunk => { childOutput += chunk; }); child.stderr.on('data', chunk => { childFailure += chunk; });
 const passcode = 'local-production-fixture-only';
 let gateway, browser;
-const report = { officialApiCalls: 0, mockAiCalls: 0, unmockedBrowserApiRequests: [], assetResponses: [], assetErrors: [], pageErrors: [], chunkedAssets: [] };
+const report = { officialApiCalls: 0, mockAiCalls: 0, unmockedBrowserApiRequests: [], outsideRequests: [], assetResponses: [], assetErrors: [], pageErrors: [], chunkedAssets: [], authorizationChecks: [] };
 try {
   for (let attempt = 0; attempt < 100 && !childOutput.includes(productionOrigin); attempt++) {
     if (child.exitCode !== null) throw new Error(`Isolated production server exited: ${childFailure}`);
@@ -44,15 +44,24 @@ try {
   const assetRoot=path.join(root,'dist','assets');
   const bundle=(await Promise.all((await fs.readdir(assetRoot)).filter(name=>name.endsWith('.js')).map(name=>fs.readFile(path.join(assetRoot,name),'utf8')))).join('\n');
   report.bundle = scriptPath;
-  assert.ok(bundle.includes('/art/season-trees-v2.png'), 'Build includes the delivered seasonal-tree atlas integration');
+  assert.ok(bundle.includes('liukanshan-procedural-3d')&&bundle.includes('elliptical-open-roof'), 'Production build includes the real 3D character and open-roof stadium meshes');
   gateway = createShareGateway({ passcode, upstream: productionOrigin, secureCookies: false });
   gateway.listen(0, '127.0.0.1'); await once(gateway, 'listening');
   const gatewayPort = gateway.address().port; assert.ok(!forbiddenPorts.has(gatewayPort));
   const base = `http://127.0.0.1:${gatewayPort}`;
+  // Static files are still private behind the gateway even when their bytes
+  // are optional reference art rather than the active world renderer.
+  for(const assetPath of [scriptPath,'/art/life-landmarks-v1.png','/art/season-trees-v2.png','/characters/wave.gif']){
+    const response=await fetch(`${base}${assetPath}`,{redirect:'manual'});
+    assert.equal(response.status,303,`${assetPath} needs a gateway session`);assert.equal(response.headers.get('location'),'/__share/login');
+    report.authorizationChecks.push({path:assetPath,unauthenticated:response.status});
+  }
   const require = createRequire(import.meta.url);
   const { chromium } = require(process.env.PLAYWRIGHT_PATH || 'C:/Users/25293/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
-  browser = await chromium.launch({ channel: 'chrome', headless: true });
+  browser = await chromium.launch({ channel: 'chrome', headless: true, args: ['--enable-webgl','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader'] });
   const context = await browser.newContext({ viewport: { width: 1365, height: 900 }, reducedMotion: 'reduce' });
+  await context.route(url=>url.origin!==base&&!['data:','blob:'].includes(url.protocol),route=>{report.outsideRequests.push(route.request().url());return route.abort();});
+  await context.route('**/api/**',route=>route.abort());
   await context.addInitScript(() => { crypto.getRandomValues = array => { array[0] = 1073741824; return array; }; });
   await context.exposeBinding('__recordMockNarration', (_source, payload) => {
     assert.equal(payload.game.version, SAVE_VERSION); report.mockAiCalls++;
@@ -88,18 +97,22 @@ try {
   await page.locator('input[name="code"]').fill(passcode);
   await Promise.all([page.waitForURL(`${base}/`), page.locator('button[type="submit"]').click()]);
   await page.locator('#start-demo').waitFor({ timeout: 60000 });
-  await page.locator('#scene[data-renderer="pixel"][data-assets="ready"][data-tree-art="seasonal-sprites"]').waitFor({ timeout: 15000 });
+  await page.locator('#scene[data-renderer="webgl"][data-assets="ready"][data-scenery="procedural-3d"]').waitFor({ timeout: 20000 });
   report.scene = await page.locator('#scene').evaluate(node => ({ ...node.dataset }));
-  assert.equal(report.scene.renderer, 'pixel'); assert.equal(report.scene.assets, 'ready');
-  assert.ok(Number(report.scene.treeSpriteCount) > 0, 'Generated sprites are used in the rendered scene');
-  assert.equal(await page.locator('#scene canvas.pixel-world-canvas').count(), 1);
-  const canvas = await page.locator('#scene canvas').evaluate(node => ({ width: node.width, height: node.height, smoothing: node.getContext('2d').imageSmoothingEnabled }));
-  assert.ok(canvas.width > 0 && canvas.height > 0); assert.equal(canvas.smoothing, false); report.canvas = canvas;
-  assert.ok(report.assetResponses.some(item => item.path === '/art/season-trees-v2.png' && item.status === 200 && item.type === 'image/png'), 'Authenticated browser actually downloaded the delivered PNG, with no hidden fallback');
+  assert.equal(report.scene.renderer, 'webgl'); assert.equal(report.scene.assets, 'ready');
+  assert.equal(report.scene.renderStyle,'pixel-3d');assert.equal(report.scene.mascot,'liukanshan-procedural-3d');
+  assert.deepEqual(report.scene.landmarks.split(',').sort(),['bookstall','library','stadium','village']);
+  assert.equal(Number(report.scene.routeLength),40);assert.ok(Number(report.scene.loadedModels)>0);
+  assert.equal(await page.locator('#scene canvas').count(), 1);
+  assert.equal(await page.locator('#scene canvas.pixel-world-canvas').count(),0);
+  const canvas = await page.locator('#scene canvas').evaluate(node => {
+    const gl=node.getContext('webgl2');return {width:node.width,height:node.height,webgl2:gl instanceof WebGL2RenderingContext,contextLost:gl?.isContextLost(),pixelated:node.style.imageRendering==='pixelated'};
+  });
+  assert.ok(canvas.width > 0 && canvas.height > 0); assert.equal(canvas.webgl2,true);assert.equal(canvas.contextLost,false);assert.equal(canvas.pixelated,true);report.canvas=canvas;
   await page.screenshot({ path: path.join(out, 'share-production-local-welcome.png') });
   // Exercise the exact empty-chunked conversion against actual production bytes.
   const cookies = await context.cookies(base), cookie = cookies.map(value => `${value.name}=${value.value}`).join('; ');
-  for (const assetPath of ['/art/season-trees-v2.png', '/characters/wave.gif', scriptPath]) {
+  for (const assetPath of ['/art/life-landmarks-v1.png', '/art/season-trees-v2.png', '/characters/wave.gif', scriptPath]) {
     const result = await new Promise((resolve, reject) => {
       const req = http.request(`${base}${assetPath}`, { headers: { cookie, 'transfer-encoding': 'chunked' }, agent: false }, res => {
         let bytes = 0; res.on('data', chunk => { bytes += chunk.length; }); res.on('end', () => resolve({ path: assetPath, status: res.statusCode, bytes }));
@@ -107,10 +120,12 @@ try {
     });
     assert.equal(result.status, 200); assert.ok(result.bytes > 0); report.chunkedAssets.push(result);
   }
-  const atlasHead = await fetch(`${base}/art/season-trees-v2.png`, { method: 'HEAD', headers: { cookie } });
-  assert.equal(atlasHead.status, 200); assert.equal(atlasHead.headers.get('content-type'), 'image/png');
-  assert.equal((await atlasHead.arrayBuffer()).byteLength, 0);
-  assert.ok(Number(atlasHead.headers.get('content-length')) > 0);
+  for(const atlasPath of ['/art/life-landmarks-v1.png','/art/season-trees-v2.png']){
+    const atlasHead = await fetch(`${base}${atlasPath}`, { method: 'HEAD', headers: { cookie } });
+    assert.equal(atlasHead.status, 200); assert.equal(atlasHead.headers.get('content-type'), 'image/png');
+    assert.equal((await atlasHead.arrayBuffer()).byteLength, 0);assert.ok(Number(atlasHead.headers.get('content-length')) > 0);
+    report.authorizationChecks.push({path:atlasPath,authenticatedHead:atlasHead.status});
+  }
   await page.locator('#start-demo').click(); await page.locator('#event-heading').waitFor({ timeout: 60000 });
   report.question = await page.locator('#event-heading').textContent(); report.choiceCount = await page.locator('[data-choice]').count();
   assert.equal(report.choiceCount, 3);
@@ -121,7 +136,7 @@ try {
   await page.locator('[data-choice="0"]').click(); await page.locator('.reflection-drawer > summary').click(); await page.locator('[data-ai-kind="event"][data-mode="live"]').waitFor();
   assert.equal(report.mockAiCalls, 1);
   await page.screenshot({ path: path.join(out, 'share-production-local-feedback.png') });
-  assert.deepEqual(report.assetErrors, []); assert.deepEqual(report.pageErrors, []); assert.deepEqual(report.unmockedBrowserApiRequests, []);
+  assert.deepEqual(report.assetErrors, []); assert.deepEqual(report.pageErrors, []); assert.deepEqual(report.unmockedBrowserApiRequests, []);assert.deepEqual(report.outsideRequests,[]);
   report.passed = true;
   console.log(JSON.stringify({ ...report, assetResponses: `${report.assetResponses.length} successful static requests` }, null, 2));
 } catch (error) { report.passed = false; report.failure = error.message; throw error; }

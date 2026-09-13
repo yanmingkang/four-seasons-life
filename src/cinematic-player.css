@@ -1,0 +1,27 @@
+/* Film fills the game, while its original 16:9 composition remains intact. */
+#cinematic-stage .cinematic--film{padding:0;background:#152420;backdrop-filter:none;color:#fffaf0;animation:cine-film-in .28s ease both;transition:opacity .22s ease;isolation:isolate}
+#cinematic-stage .cinematic--film.is-leaving{animation:none;opacity:0}
+#cinematic-stage .cinematic--film .cine-card{position:relative;width:100%;height:100%;max-height:none;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:hidden}
+#cinematic-stage .cinematic--film .cine-frame{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;border-radius:0;background:#152420}
+#cinematic-stage .cinematic--film .cine-video,#cinematic-stage .cine-poster{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#152420;border:0;filter:none}
+#cinematic-stage .cine-poster{z-index:7}
+#cinematic-stage .cinematic--film .cine-header{position:absolute;z-index:10;left:0;right:0;top:0;margin:0;padding:clamp(12px,2.5vw,30px);padding-top:max(12px,env(safe-area-inset-top));background:linear-gradient(#0a191bcc,transparent);pointer-events:none;gap:5px 16px}
+#cinematic-stage .cinematic--film .cine-kicker{color:#f5e7c9;letter-spacing:.18em;text-shadow:0 1px 4px #10211e;font-size:10px}
+#cinematic-stage .cinematic--film .cine-title{color:#fffaf0;font:600 clamp(17px,2vw,26px)/1.4 'Microsoft YaHei','PingFang SC',sans-serif;text-shadow:0 2px 6px #10211e;margin:0}
+#cinematic-stage .cinematic--film .cine-placeholder-label{color:#fff6df;border:0;background:#13241eaa;font-size:12px}
+#cinematic-stage .cinematic--film .cine-placeholder-label:empty{display:none}
+#cinematic-stage .cinematic--film .cine-footer{position:absolute;z-index:10;left:0;right:0;bottom:0;padding:16px clamp(12px,2.5vw,30px);padding-bottom:max(16px,env(safe-area-inset-bottom));background:linear-gradient(transparent,#081a1cde);gap:14px;min-height:72px;box-sizing:border-box}
+#cinematic-stage .cinematic--film .cine-progress{height:3px;background:#fffae14d}
+#cinematic-stage .cinematic--film .cine-progress::after{background:#f4d996}
+#cinematic-stage .cinematic--film :is(.cine-skip,.cine-sound){flex-shrink:0;min-height:44px;padding:9px 16px;border:1px solid #faf4d7aa;border-radius:8px;background:#19372edb;color:#fff9e6;font:500 13px/1.4 'Microsoft YaHei','PingFang SC',sans-serif;box-shadow:none;cursor:pointer}
+#cinematic-stage .cinematic--film :is(.cine-skip,.cine-sound):hover{background:#34533a}
+#cinematic-stage .cinematic--film :is(.cine-skip,.cine-sound):focus-visible{outline:3px solid #ffe39b;outline-offset:3px}
+#cinematic-stage .cinematic--film .cine-caption{display:none}
+#cinematic-stage .cinematic--film[data-mode=storyboard] .cine-caption{display:block;position:absolute;z-index:10;left:16px;right:16px;bottom:85px;margin:0;color:#fffaf0;text-shadow:0 2px 6px #071e16;background:#152420dd;border-radius:8px;padding:8px 12px;font-size:15px;justify-self:center}
+#cinematic-stage .cinematic--film[data-mode=video] .cine-diorama{visibility:hidden}
+#cinematic-stage .cinematic--film[data-mode=loading] .cine-diorama{animation-play-state:paused}
+.cine-theme-stairwell .cine-window{background:linear-gradient(#94abb0,#e7e2ce)}
+.cine-theme-stairwell .cine-floor{background:repeating-linear-gradient(0deg,#c8c9bd 0 38px,#7b8b84 40px 48px)}
+@keyframes cine-film-in{from{opacity:0}to{opacity:1}}
+@media(max-height:500px){#cinematic-stage .cinematic--film .cine-header{padding:10px 16px;gap:2px}#cinematic-stage .cinematic--film .cine-title{font-size:17px}#cinematic-stage .cinematic--film .cine-footer{padding:8px 16px;min-height:60px}#cinematic-stage .cinematic--film .cine-kicker{font-size:9px}}
+@media(prefers-reduced-motion:reduce){#cinematic-stage .cinematic--film{animation:none;transition:none}}

@@ -1,0 +1,29 @@
+/* Native text remains crisp; the scene renderer and existing 3D art are intact. */
+.event-key .scene-moment{font:400 15px/1.75 "Microsoft YaHei","PingFang SC",sans-serif;color:#526452;border-left:3px solid #8caa80;padding:8px 0 8px 14px;margin:14px 0 18px}
+.event-key .choice-intention{display:block;margin-top:5px;font:400 14px/1.55 "Microsoft YaHei","PingFang SC",sans-serif;color:#5a604c}
+.event-ordinary .event-scene{font-size:18px;line-height:1.75}
+.event-ordinary .event-background{font-size:14px;margin:12px 0}
+.rhythm-status{display:flex;flex-wrap:wrap;align-items:center;gap:5px 9px;margin:14px 0;padding:9px 12px;border-radius:9px;background:#e7eee0;color:#425743;font:400 14px/1.6 "Microsoft YaHei","PingFang SC",sans-serif}
+.rhythm-status b{font-weight:600;white-space:nowrap}
+.rhythm-status[data-level="medium"]{background:#f2e9d2;color:#69552e}
+.rhythm-status[data-level="high"]{background:#f3e0d5;color:#7d4338}
+.inventory-nudge{display:flex;align-items:center;justify-content:flex-start;gap:10px;width:100%;min-height:44px;text-align:left;margin:14px 0 5px;padding:9px 12px;border:1px solid #bdc5a6;border-radius:9px;background:#f0f0db;color:#475f47;cursor:pointer;font:500 14px/1.5 "Microsoft YaHei","PingFang SC",sans-serif}
+.inventory-nudge small{display:block;font-size:14px;font-weight:400;color:#596547}
+.inventory-nudge>span:last-child{margin-left:auto}
+.inventory-nudge:hover{background:#e5ebcf;border-color:#6a8a60}
+.inventory-nudge:focus-visible{outline:3px solid #456a54;outline-offset:3px}
+.mentor-preview{margin-top:14px;font:400 14px/1.7 "Microsoft YaHei","PingFang SC",sans-serif;color:#45563f}
+.mentor-preview .mentor-note{font-size:14px;margin-bottom:0}
+.choice-context{display:none}
+@media(max-width:900px){.event-key .scene-moment{font-size:14px;margin:10px 0}.event-key .choice{padding:10px 12px}.event-ordinary .event-scene{font-size:16px}.rhythm-status{margin:10px 0}.inventory-nudge{margin-top:10px}}
+@media(orientation:landscape) and (max-height:500px){
+  .event-panel .panel-topline{position:absolute;top:12px;left:20px;right:55%;margin:0}
+  .event-panel .event-story{padding-top:38px}
+  .event-panel .choice strong{font-size:14px;line-height:1.5}
+  .event-panel .options-3 .choice{min-height:44px;padding:8px 9px}
+  .event-panel .choice-intention{display:none}
+  .event-panel .choice-context{display:block;font-size:14px;line-height:1.6;margin:12px 0}
+  .choice-context summary{cursor:pointer;color:#4a654d}
+  .choice-context p{margin:10px 0;color:#514c3b}
+  .event-panel .event-scene{font-size:14px;line-height:1.65}
+}

@@ -1,0 +1,7 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "zhihu-four-seasons",
+  "pages_build_output_dir": "../../.cloud-release/pages/3302210b74e91b5759cc6a668a6a6e784e7d9bc8ac26891dd1263f32ed5efc30/assets",
+  "compatibility_date": "2026-09-01",
+  "services": [{"binding": "GAME_BACKEND", "service": "zhihu-four-seasons"}]
+}

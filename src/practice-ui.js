@@ -14,11 +14,13 @@ export function validatePracticeResponse(body,expectedTurn){
 
 // One ephemeral session per settled event. Typed messages never enter game
 // saves, scores, journals or URLs. Closing invalidates in-flight DOM updates.
-export function mountPractice(container,session,{onClose=()=>{},deferTip=false,exitLabel=null}={}){
+export function mountPractice(container,session,{onClose=()=>{},deferTip=false,exitLabel=null,contextLabel=null,headingLabel=null}={}){
   let disposed=false,busy=false,request=null,pendingText='';
   const {scene,record}=session;
   container.innerHTML=`<section class="practice-room" aria-label="沟通小练习"><div class="practice-heading"><span class="zhihu-badge" aria-hidden="true">知</span><div><span class="tiny-label">刘看山陪你练 · 虚构角色</span><h2>${esc(scene.title)}</h2></div><span class="practice-round" aria-live="polite"></span></div><p class="practice-context">接着「${esc(record.choiceLabel)}」，练习你会怎样表达。</p><p class="practice-boundary">最多两轮 · 可随时跳过 · 不改变资金、情绪、专业或结局</p><div class="practice-chat" role="log" aria-label="练习对话" aria-live="polite" aria-relevant="additions text"></div><aside class="practice-tip" hidden><b>刘看山 · 留一句具体提醒</b><p></p><small></small></aside><form class="practice-form"><label for="practice-message">你会怎么回应？</label><textarea id="practice-message" rows="2" maxlength="${PRACTICE_MAX_LENGTH}" placeholder="写下你此刻会说的话……" autocomplete="off" spellcheck="false" aria-describedby="practice-privacy practice-counter"></textarea><div class="practice-compose-meta"><small id="practice-counter">0 / ${PRACTICE_MAX_LENGTH}</small><button class="primary" type="submit">说出这句话 →</button></div><p id="practice-privacy">发送后由知乎直答处理。请勿输入真实姓名、个人隐私或公司机密。练习文字不进入存档；服务器仅短期保留会话。</p></form><p class="practice-status" role="status"></p><button type="button" class="text-button practice-exit">跳过练习，回到旅程 →</button></section>`;
   const room=container.querySelector('.practice-room'),chat=room.querySelector('.practice-chat'),form=room.querySelector('form'),textarea=room.querySelector('textarea'),submit=room.querySelector('[type="submit"]'),counter=room.querySelector('#practice-counter'),status=room.querySelector('.practice-status'),tip=room.querySelector('.practice-tip'),exit=room.querySelector('.practice-exit');
+  if(contextLabel)room.querySelector('.practice-context').textContent=contextLabel;
+  if(headingLabel)room.querySelector('.tiny-label').textContent=headingLabel;
   textarea.value=session.draft;
   const row=(role,text,mode)=>`<article class="practice-message ${role}"><small>${role==='player'?'你':esc(scene.npcName)}${role==='npc'?`<span>${mode==='opening'?'情境开场 · 预设':practiceModeLabel(mode)}</span>`:''}</small><p>${esc(text)}</p></article>`;
   function input(){session.draft=textarea.value;counter.textContent=`${textarea.value.length} / ${PRACTICE_MAX_LENGTH}`;submit.disabled=busy||session.done||!textarea.value.trim();}
@@ -40,7 +42,8 @@ export function mountPractice(container,session,{onClose=()=>{},deferTip=false,e
     const controller=new AbortController();request=controller;const timer=setTimeout(()=>controller.abort(),25000);
     try{
       if(session.localOnly)throw new Error('local rehearsal');
-      const response=await fetch('/api/practice',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...(session.sample?{sample:session.sample}:{game:session.game}),clientId:session.clientId,turn:session.turn+1,...(session.sessionId?{sessionId:session.sessionId}:{}),message}),signal:controller.signal});
+      const response=await fetch('/api/practice',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...(session.rehearsal?{rehearsal:session.rehearsal}:session.sample?{sample:session.sample}:{game:session.game}),clientId:session.clientId,turn:session.turn+1,...(session.sessionId?{sessionId:session.sessionId}:{}),message}),signal:controller.signal});
+      if(response.status===401&&typeof window!=='undefined')window.dispatchEvent(new Event('zhihu-session-required'));
       if(!response.ok)throw new Error('practice unavailable');
       result=await response.json();if(!validatePracticeResponse(result,session.turn+1))throw new Error('invalid practice');
     }catch{

@@ -6,7 +6,8 @@ const pending = new Map();
 
 export function narrationKey(kind, game) {
   // Feedback and the finished report describe the same settled choices.
-  return JSON.stringify({kind, version:game.version, mode:game.mode, name:game.name, talent:game.talent, moves:game.moves});
+  const extension=game.extension?{...game.extension,actions:game.phase==='finished' && game.extension.actions?.at(-1)?.[0]==='a'?game.extension.actions.slice(0,-1):game.extension.actions}:undefined;
+  return JSON.stringify({kind, version:game.version, mode:game.mode, name:game.name, talent:game.talent, moves:game.moves,...(extension?{extension}:{})});
 }
 
 export function peekNarration(kind, game) {
@@ -36,6 +37,7 @@ export function requestNarration(kind, game, fallbackText) {
         method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({kind,game}),signal:controller.signal,
       });
+      if(response.status===401&&typeof window!=='undefined')window.dispatchEvent(new Event('zhihu-session-required'));
       if(!response.ok) throw new Error('narration unavailable');
       const body=await response.json();
       if(!['live','cache','fallback'].includes(body?.mode)||typeof body.text!=='string'||!body.text.trim()||body.text.length>5000) throw new Error('invalid narration');

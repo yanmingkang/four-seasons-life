@@ -4,6 +4,7 @@ import http from 'node:http';
 import { once } from 'node:events';
 import { setTimeout as delay } from 'node:timers/promises';
 import { createShareGateway } from '../server/share-gateway.mjs';
+import { CINEMATIC_MANIFEST } from '../src/cinematic-manifest.js';
 
 const passcode = 'test-only-passcode-9824';
 const host = 'play.example.test';
@@ -53,6 +54,14 @@ test('gateway rejects development and non-loopback upstream configuration', () =
   }
   assert.throws(() => createShareGateway({ passcode: 'tiny' }));
   assert.throws(() => createShareGateway({ passcode, publicHost: 'https://wrong.example/' }));
+});
+
+test('exact first-edition art files require authentication while source documents and unknown files stay private',async t=>{
+  const f=await fixture(t);
+  assert.equal((await f.request('/art/first-edition/image1.jpeg')).status,303);
+  const cookie=await f.token();
+  for(const file of ['image1.jpeg','image17.png','image55.png'])assert.equal((await f.request(`/art/first-edition/${file}`,{headers:{cookie}})).status,200);
+  for(const file of ['image56.png','README.md','初版.docx','image1.png','.env'])assert.equal((await f.request(`/art/first-edition/${encodeURIComponent(file)}`,{headers:{cookie}})).status,404);
 });
 
 test('external boot script keeps authentication and strict CSP, without opening other root files', async t => {
@@ -155,7 +164,7 @@ test('allowlist rejects source, dot paths, encoded traversal, slash and sourcema
   }
 });
 
-test('all eight cinematic clips and optional covers require login for both GET and HEAD', async t => {
+test('all eight legacy cinematic clips and optional covers require login for both GET and HEAD', async t => {
   const f = await fixture(t);
   for (const cell of ['06','11','13','15','18','22','27','31']) {
     for (const extension of ['mp4','webm','jpg','webp']) {
@@ -250,7 +259,7 @@ test('life-landmark atlas keeps the existing static timeout and response-size bo
   assert.equal((await oversized.request('/art/life-landmarks-v1.png', { headers: { cookie: await oversized.token() } })).status, 502);
 });
 
-test('authenticated cinematic allowlist serves precisely eight clip names and cover formats without forwarding credentials', async t => {
+test('authenticated legacy cinematic paths and cover formats remain compatible without forwarding credentials', async t => {
   const types = {mp4:'video/mp4',webm:'video/webm',jpg:'image/jpeg',webp:'image/webp'};
   const f = await fixture(t, {}, (req,res) => {
     const extension = req.url.split('.').at(-1);
@@ -306,6 +315,38 @@ test('cinematic Range requests remain bounded full responses and unsupported met
   assert.equal(f.requests[0].headers.range,undefined);assert.equal(f.requests[0].headers['if-range'],undefined);
   for(const method of ['POST','PUT','DELETE'])assert.equal((await f.request('/cinematics/cell-06.mp4',{method,headers:{cookie,origin}})).status,405);
   assert.equal(f.requests.length,1);
+});
+
+test('manifest films and posters require login, allow exact GET/HEAD paths and preserve full-response Range behavior', async t => {
+  const body='manifest-only local media fixture';
+  const f=await fixture(t,{},(req,res)=>{
+    res.writeHead(200,{'Content-Type':req.url.endsWith('.mp4')?'video/mp4':'image/jpeg','Content-Length':Buffer.byteLength(body)});res.end(body);
+  });
+  const paths=CINEMATIC_MANIFEST.flatMap(item=>[item.src,item.poster]);assert.equal(new Set(paths).size,16);
+  for(const target of paths)for(const method of ['GET','HEAD']){
+    const response=await f.request(target,{method});assert.equal(response.status,303,target);assert.equal(response.headers.location,'/__share/login');
+  }
+  assert.equal(f.requests.length,0,'Anonymous users never reach the media upstream');
+  const cookie=await f.token();
+  for(const target of paths){
+    const result=await f.request(target,{headers:{cookie}});assert.equal(result.status,200,target);assert.equal(result.body,body);
+    assert.equal(result.headers['content-type'],target.endsWith('.mp4')?'video/mp4':'image/jpeg');
+    const head=await f.request(target,{method:'HEAD',headers:{cookie}});assert.equal(head.status,200,target);assert.equal(head.body,'');
+    for(const name of ['cookie','authorization'])assert.equal(f.requests.at(-1).headers[name],undefined);
+  }
+  for(const item of CINEMATIC_MANIFEST.filter(item=>[8,31].includes(item.cell))){
+    const result=await f.request(item.src,{headers:{cookie,range:'bytes=0-127'}});
+    assert.equal(result.status,200);assert.equal(result.body,body);assert.equal(result.headers['content-range'],undefined);
+    assert.equal(f.requests.at(-1).headers.range,undefined,'Gateway keeps its documented bounded full-response policy');
+  }
+  const count=f.requests.length;
+  for(const target of [
+    '/cinematics/team-20260912/README.md','/cinematics/team-20260912/media.json','/cinematics/team-20260912/cell-13.mp4',
+    '/cinematics/team-20260912-repaired-20260913/','/cinematics/team-20260912-repaired-20260913/README.md',
+    '/cinematics/team-20260912-repaired-20260913/media.json','/cinematics/team-20260912-repaired-20260913/cell-06.mp4',
+    '/cinematics/team-20260912-repaired-20260913/cell-08.mp4.map','/cinematics/team-20260912-repaired-20260913/cell-08.mp4/extra',
+  ])assert.equal((await f.request(target,{headers:{cookie}})).status,404,target);
+  assert.equal(f.requests.length,count,'Only exact manifest files reach upstream, never directories, reports or unknown films');
 });
 
 test('upstream headers contain no session, authentication, Cloudflare or forwarded identity', async t => {

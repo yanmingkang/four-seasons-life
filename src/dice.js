@@ -100,10 +100,10 @@ export class SceneDice {
    * call while throwing returns the current promise. dispose() resolves it null.
    * Ground samples and actor positions are world coordinates; keep group at identity.
    */
-  throw({ actor, value, heading, groundY = () => 0, reduceMotion = false, onStage } = {}) {
+  throw({ actor, value, heading, groundY = () => 0, reduceMotion = false, isPaused = () => false, onStage } = {}) {
     if (this.disposed) return Promise.reject(new Error('SceneDice was disposed.'));
     if (this.active) return this.active.promise;
-    if (!actor?.isObject3D || typeof groundY !== 'function') return Promise.reject(new TypeError('A Three.js actor and groundY function are required.'));
+    if (!actor?.isObject3D || typeof groundY !== 'function' || typeof isPaused !== 'function') return Promise.reject(new TypeError('A Three.js actor, groundY and isPaused functions are required.'));
     let finalQuaternion;
     try { finalQuaternion = diceOrientation(value, Number.isFinite(heading) ? heading + .28 : .28); }
     catch (error) { return Promise.reject(error); }
@@ -189,7 +189,7 @@ export class SceneDice {
     const tick = now => {
       if (this.active !== active || this.disposed) return;
       try {
-        if (visibility?.hidden) { last = null; active.raf = requestAnimationFrame(tick); return; }
+        if (visibility?.hidden || isPaused()) { last = null; active.raf = requestAnimationFrame(tick); return; }
         if (last !== null) elapsed += Math.max(0, now - last);
         last = now; active.elapsed = elapsed;
         if (elapsed < RELEASE) {
@@ -254,15 +254,21 @@ export class SceneDice {
     return promise;
   }
 
-  dispose() {
-    if (this.disposed) return;
-    this.disposed = true;
+  /** Stop a presentation without disposing the reusable numbered die. */
+  cancel() {
     if (this.active) {
       const active = this.active; this.active = null;
       if (active.raf && typeof cancelAnimationFrame === 'function') cancelAnimationFrame(active.raf);
       active.cleanup();
       active.restoreActor(); active.resolve(null);
     }
+    this.mesh.visible = false; this.shadow.visible = false; this.impactRing.visible = false;
+  }
+
+  dispose() {
+    if (this.disposed) return;
+    this.disposed = true;
+    this.cancel();
     this.group.removeFromParent(); this.mesh.visible = false;
     for (const geometry of this.geometries) geometry.dispose();
     for (const material of this.materials) material.dispose();

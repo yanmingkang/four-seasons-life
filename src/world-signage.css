@@ -1,0 +1,19 @@
+/* Overview chapters only; location names live on physical 3D road signs. */
+.world-signage{position:absolute;inset:0;z-index:2;overflow:hidden;pointer-events:none;user-select:none;font-family:"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif;image-rendering:auto}
+.world-signage[hidden],.overlay-open .world-signage,.dialog-open .world-signage,.experience[data-stage="season"] .world-signage,.experience[data-stage="transition"] .world-signage{display:none}
+.world-signage .world-label{position:absolute;left:0;top:0;margin:0;visibility:hidden;opacity:1;white-space:nowrap;line-height:1.35;letter-spacing:0;font-family:inherit;font-weight:600;font-size:15px;color:#283b32;background:#fff9ea;border:1px solid #75684e;border-radius:4px;box-shadow:0 2px 4px #203c3433;text-shadow:none;transition:none;pointer-events:none}
+.world-signage .world-label{display:flex;align-items:center;gap:8px;padding:7px 10px;color:#283b32;background:#fff9ea;border:1px solid #75684e}
+.world-signage .world-label b{font-family:inherit;font-size:22px;line-height:1.2;font-weight:700;color:#355f43}
+.world-signage .world-label span{font-family:inherit;font-size:14px;color:#283b32}
+.world-signage .world-label small{display:none}
+.world-signage .world-label.season-0{border-left:4px solid #b86c87}
+.world-signage .world-label.season-1{border-left:4px solid #48774b}
+.world-signage .world-label.season-2{border-left:4px solid #a97029}
+.world-signage .world-label.season-3{border-left:4px solid #5d7e99}
+.scene[data-renderer="webgl"] .world-location{font-family:"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif;color:#354738;background:#fff9eaf5;border-color:#8a795c;text-shadow:none}
+.scene[data-renderer="webgl"] .world-location strong{font-family:inherit;font-weight:600;color:#2b4635}
+.scene[data-renderer="webgl"] .world-location span,.scene[data-renderer="webgl"] .world-location small{color:#4c5b4b}
+@media(orientation:landscape) and (max-height:550px){
+  .world-signage .world-label{padding:4px 7px;gap:5px}
+  .world-signage .world-label b{font-size:19px}
+}

@@ -1,0 +1,413 @@
+/* Seasonal arrival accents sit over the live 3D scene, never replace it.
+   The id intentionally wins over the legacy event-only arrival rules. */
+#arrival-transition.arrival-transition {
+  --arrival-ink: #fff3f4;
+  --arrival-accent: #f1b0c1;
+  --arrival-shadow: #422839;
+  --arrival-panel: #422839a8;
+  --arrival-line: #efbdce69;
+  --arrival-haze: #edafc024;
+  --arrival-title-font: "Songti SC", "STSong", "SimSun", serif;
+  --arrival-title-weight: 500;
+  box-sizing: border-box;
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: max(140px, env(safe-area-inset-top)) 24px max(80px, env(safe-area-inset-bottom));
+  isolation: isolate;
+  overflow: hidden;
+  pointer-events: none;
+  color: var(--arrival-ink);
+  background: radial-gradient(ellipse 390px 235px at 50% calc(50% + 30px), var(--arrival-panel), transparent 85%);
+  filter: none;
+  backdrop-filter: none;
+  animation: none;
+}
+
+#arrival-transition.arrival-transition[hidden] { display: none; }
+#arrival-transition.arrival-transition::before,
+#arrival-transition.arrival-transition::after { content: none; }
+
+#arrival-transition .arrival-atmosphere {
+  position: absolute;
+  inset: 140px 3% 80px;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+#arrival-transition .arrival-atmosphere::before,
+#arrival-transition .arrival-atmosphere::after {
+  content: "";
+  position: absolute;
+  inset: 12% 20%;
+  opacity: .55;
+  pointer-events: none;
+}
+
+#arrival-transition .arrival-shape {
+  position: absolute;
+  z-index: 0;
+  left: 50%;
+  top: calc(50% + 30px);
+  width: min(470px, 75vw);
+  height: 238px;
+  max-width: 75vw;
+  box-sizing: border-box;
+  border: 1px solid var(--arrival-line);
+  border-radius: 46% 54% 49% 51% / 52% 43% 57% 48%;
+  background: radial-gradient(ellipse, var(--arrival-haze), transparent 74%);
+  box-shadow: none;
+  transform: translate(-50%, -50%);
+  opacity: .85;
+  animation: none;
+}
+#arrival-transition .arrival-shape::before,
+#arrival-transition .arrival-shape::after {
+  content: "";
+  position: absolute;
+  width: 48px;
+  height: 14px;
+  top: 22%;
+  left: 9%;
+  box-sizing: border-box;
+  border: 0;
+  background: none;
+  opacity: .6;
+  transform: none;
+}
+#arrival-transition .arrival-shape::after { top: auto; left: auto; bottom: 22%; right: 9%; }
+
+#arrival-transition .arrival-mark {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  width: 94px;
+  height: 82px;
+  margin: 0 0 15px;
+  padding: 0 7px;
+  border: 1px solid var(--arrival-accent);
+  border-radius: 28px 28px 14px 28px;
+  background: var(--arrival-panel);
+  color: var(--arrival-ink);
+  font: 500 46px/1 "Songti SC", "STSong", "SimSun", serif;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px var(--arrival-shadow);
+  box-shadow: inset 0 0 0 5px #ffffff09, 0 8px 22px #122e2b1a;
+  transform: none;
+  animation: none;
+}
+#arrival-transition .arrival-caption {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 9px;
+  color: var(--arrival-accent);
+  font: 600 12px/1.5 "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+  letter-spacing: .2em;
+  text-align: center;
+  text-shadow: 0 1px 3px var(--arrival-shadow);
+  animation: none;
+}
+#arrival-transition .arrival-title {
+  position: relative;
+  z-index: 1;
+  display: block;
+  max-width: min(90vw, 560px);
+  margin: 0;
+  color: var(--arrival-ink);
+  font-family: var(--arrival-title-font);
+  font-size: 26px;
+  font-weight: var(--arrival-title-weight);
+  line-height: 1.45;
+  letter-spacing: .08em;
+  text-align: center;
+  text-wrap: balance;
+  text-shadow: 0 2px 3px var(--arrival-shadow), 0 0 12px var(--arrival-shadow);
+  animation: none;
+}
+
+/* Spring: a petal-edged seal, pale blossom dust, and restrained rose ink. */
+#arrival-transition[data-season="0"] .arrival-atmosphere::before {
+  background: radial-gradient(ellipse at 15% 20%, #f3baca30, transparent 40%), radial-gradient(ellipse at 85% 75%, #f8dbe426, transparent 38%);
+}
+#arrival-transition .arrival-particle {
+  position: absolute;
+  left: var(--x, 50%);
+  top: var(--y, 50%);
+  width: var(--size, 10px);
+  height: calc(var(--size, 10px) * 1.28);
+  margin: 0;
+  border: 0;
+  border-radius: 65% 12% 65% 45%;
+  background: linear-gradient(135deg, #fff0f2, #ed9db9);
+  opacity: .55;
+  transform: rotate(var(--spin, 0deg));
+  animation: none;
+}
+
+/* Summer: sunlit water rings and upright shafts of turquoise/gold light. */
+#arrival-transition[data-season="1"] {
+  --arrival-ink: #fff9df;
+  --arrival-accent: #f5d799;
+  --arrival-shadow: #173d42;
+  --arrival-panel: #173d42aa;
+  --arrival-line: #9bdcc65c;
+  --arrival-haze: #65d0c229;
+  --arrival-title-font: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+  --arrival-title-weight: 600;
+}
+#arrival-transition[data-season="1"] .arrival-shape {
+  width: min(450px, 75vw);
+  height: 225px;
+  border-radius: 50%;
+  border-color: #dbdc9570;
+  background: repeating-radial-gradient(ellipse at center, transparent 0 29px, #98dcd31a 30px 31px, transparent 32px 51px);
+}
+#arrival-transition[data-season="1"] .arrival-mark {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+  font-weight: 600;
+  box-shadow: inset 0 0 0 5px #f5d7990a, 0 0 0 5px #9bdcc61c;
+}
+#arrival-transition[data-season="1"] .arrival-atmosphere::before {
+  inset: 3% 16%;
+  background: repeating-linear-gradient(112deg, transparent 0 93px, #fcebb51f 94px 97px, transparent 98px 141px);
+}
+#arrival-transition[data-season="1"] .arrival-particle {
+  width: 2px;
+  height: calc(var(--size, 10px) * 3);
+  border-radius: 2px;
+  background: linear-gradient(180deg, transparent, #ffecba, #a1e4d8, transparent);
+  transform: rotate(-18deg);
+}
+#arrival-transition[data-season="1"] .arrival-particle:nth-child(3n) {
+  width: calc(var(--size, 10px) * 2.7);
+  height: calc(var(--size, 10px) * .8);
+  border: 1px solid #abeee19c;
+  border-radius: 50%;
+  background: transparent;
+}
+
+/* Autumn: copper-edged stationery and real leaf silhouettes with midribs. */
+#arrival-transition[data-season="2"] {
+  --arrival-ink: #fff0d8;
+  --arrival-accent: #edb879;
+  --arrival-shadow: #4b302b;
+  --arrival-panel: #4b302ba8;
+  --arrival-line: #e8aa766b;
+  --arrival-haze: #d9883826;
+  --arrival-title-font: "STKaiti", "KaiTi", "Songti SC", "SimSun", serif;
+  --arrival-title-weight: 600;
+}
+#arrival-transition[data-season="2"] .arrival-shape {
+  border-radius: 14px 54px 14px 54px;
+  height: 225px;
+  background: linear-gradient(135deg, #f1ae4816, transparent 48%, #c9703e1c);
+  box-shadow: inset 0 0 0 5px #edb87908;
+}
+#arrival-transition[data-season="2"] .arrival-mark {
+  border-radius: 7px 24px 7px 24px;
+  border-style: double;
+  border-width: 3px;
+  font-family: "STKaiti", "KaiTi", "Songti SC", "SimSun", serif;
+  font-size: 48px;
+  font-weight: 600;
+}
+#arrival-transition[data-season="2"] .arrival-particle {
+  height: calc(var(--size, 10px) * 1.75);
+  border-radius: 85% 8% 75% 15%;
+  background: linear-gradient(132deg, #f7c87b, #c37142 80%);
+}
+#arrival-transition[data-season="2"] .arrival-particle::after {
+  content: "";
+  position: absolute;
+  left: 48%;
+  top: 12%;
+  width: 1px;
+  height: 87%;
+  background: #864b4380;
+  transform: rotate(22deg);
+}
+
+/* Winter owns every silhouette, including rest events: snow, never leaves. */
+#arrival-transition[data-season="3"] {
+  --arrival-ink: #f1fbff;
+  --arrival-accent: #c3e8ff;
+  --arrival-shadow: #243e58;
+  --arrival-panel: #243e58ab;
+  --arrival-line: #c4e9ff7d;
+  --arrival-haze: #a3dbf025;
+  --arrival-title-font: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+  --arrival-title-weight: 500;
+}
+#arrival-transition[data-season="3"] .arrival-shape {
+  height: 230px;
+  border-radius: 18px;
+  border: 1px solid var(--arrival-line);
+  background: linear-gradient(135deg, #d4f1ff20, transparent 20% 80%, #d4f1ff20), linear-gradient(45deg, #d4f1ff16, transparent 18% 82%, #d4f1ff16);
+  box-shadow: inset 0 0 0 5px #d9f5ff08;
+}
+#arrival-transition[data-season="3"] .arrival-mark {
+  border-radius: 4px;
+  clip-path: polygon(15% 0, 85% 0, 100% 18%, 100% 82%, 85% 100%, 15% 100%, 0 82%, 0 18%);
+  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+  font-weight: 500;
+  box-shadow: inset 0 0 0 4px #c3e8ff14;
+}
+#arrival-transition[data-season="3"] .arrival-atmosphere::before {
+  inset: 0 4%;
+  border: 1px solid #d2efff20;
+  border-radius: 34px;
+  background: linear-gradient(135deg, #dcf4ff24, transparent 10% 90%, #dcf4ff24), linear-gradient(45deg, #dcf4ff20, transparent 10% 90%, #dcf4ff20);
+}
+#arrival-transition[data-season="3"] .arrival-particle {
+  height: var(--size, 10px);
+  border-radius: 0;
+  background: linear-gradient(90deg, transparent 43%, #e7f7ff 44% 56%, transparent 57%), linear-gradient(30deg, transparent 43%, #e7f7ff 44% 56%, transparent 57%), linear-gradient(-30deg, transparent 43%, #e7f7ff 44% 56%, transparent 57%);
+}
+#arrival-transition[data-season="3"] .arrival-particle:nth-child(3n) {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #e7f7ff;
+}
+
+/* Event cues sit on top of the season language without replacing its shape. */
+#arrival-transition[data-theme="work"] .arrival-shape::before,
+#arrival-transition[data-theme="work"] .arrival-shape::after {
+  background: repeating-linear-gradient(180deg, var(--arrival-accent) 0 1px, transparent 1px 6px);
+}
+#arrival-transition[data-theme="rest"] .arrival-shape::before,
+#arrival-transition[data-theme="rest"] .arrival-shape::after {
+  width: 39px;
+  height: 23px;
+  border-bottom: 1px solid var(--arrival-accent);
+  border-radius: 50%;
+}
+#arrival-transition[data-theme="conflict"] .arrival-shape::before,
+#arrival-transition[data-theme="conflict"] .arrival-shape::after {
+  width: 36px;
+  height: 25px;
+  border-top: 1px solid var(--arrival-accent);
+  border-bottom: 1px solid var(--arrival-accent);
+  transform: rotate(-24deg);
+}
+#arrival-transition[data-theme="conflict"] .arrival-shape::after { transform: rotate(24deg); }
+#arrival-transition[data-theme="meeting"] .arrival-shape::before,
+#arrival-transition[data-theme="meeting"] .arrival-shape::after {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff1ce65, #eec49220 42%, transparent 70%);
+}
+#arrival-transition[data-theme="opportunity"] .arrival-shape::before,
+#arrival-transition[data-theme="opportunity"] .arrival-shape::after {
+  width: 13px;
+  height: 13px;
+  border: 1px solid var(--arrival-accent);
+  transform: rotate(45deg);
+}
+
+#arrival-transition.arrival-transition.playing {
+  animation: arrival-season-envelope var(--arrival-duration, 1120ms) ease-in-out both;
+}
+#arrival-transition.arrival-transition.playing .arrival-shape {
+  animation: arrival-season-outline var(--arrival-duration, 1120ms) ease-out both;
+}
+#arrival-transition.arrival-transition.playing .arrival-mark,
+#arrival-transition.arrival-transition.playing .arrival-caption,
+#arrival-transition.arrival-transition.playing .arrival-title {
+  animation: arrival-season-copy var(--arrival-duration, 1120ms) ease-out both;
+}
+#arrival-transition.arrival-transition.playing .arrival-particle {
+  animation: arrival-season-petal calc(var(--arrival-duration, 1120ms) * 1.5) ease-out var(--delay, 0s) 1 both;
+}
+#arrival-transition[data-season="1"].playing .arrival-particle { animation-name: arrival-season-light; }
+#arrival-transition[data-season="2"].playing .arrival-particle { animation-name: arrival-season-leaf; }
+#arrival-transition[data-season="3"].playing .arrival-particle { animation-name: arrival-season-snow; }
+
+@keyframes arrival-season-envelope {
+  0%, 100% { opacity: 0; }
+  17%, 83% { opacity: 1; }
+}
+@keyframes arrival-season-outline {
+  0% { transform: translate(-50%, -50%) scale(.96); opacity: 0; }
+  25%, 83% { transform: translate(-50%, -50%) scale(1); opacity: .85; }
+  100% { transform: translate(-50%, -50%) scale(1.02); opacity: 0; }
+}
+@keyframes arrival-season-copy {
+  0% { opacity: 0; transform: translateY(5px); }
+  22%, 86% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: none; }
+}
+@keyframes arrival-season-petal {
+  from { opacity: 0; transform: translate(0, -12px) rotate(var(--spin, 0deg)); }
+  22%, 68% { opacity: .65; }
+  to { opacity: 0; transform: translate(var(--drift, 20px), 28px) rotate(calc(var(--spin, 0deg) + 38deg)); }
+}
+@keyframes arrival-season-light {
+  from { opacity: 0; transform: translateY(14px) rotate(-18deg) scaleY(.8); }
+  24%, 65% { opacity: .65; }
+  to { opacity: 0; transform: translateY(-12px) rotate(-18deg) scaleY(1.08); }
+}
+@keyframes arrival-season-leaf {
+  from { opacity: 0; transform: translate(0, -16px) rotate(var(--spin, 0deg)); }
+  22%, 65% { opacity: .7; }
+  to { opacity: 0; transform: translate(var(--drift, 20px), 39px) rotate(calc(var(--spin, 0deg) + 74deg)); }
+}
+@keyframes arrival-season-snow {
+  from { opacity: 0; transform: translateY(-12px) rotate(var(--spin, 0deg)); }
+  20%, 74% { opacity: .72; }
+  to { opacity: 0; transform: translate(calc(var(--drift, 20px) * .3), 22px) rotate(calc(var(--spin, 0deg) + 9deg)); }
+}
+
+/* 844 x 390: keep the complete title stack between y=140 and y=310. */
+@media (max-height: 550px) {
+  #arrival-transition.arrival-transition {
+    background: radial-gradient(ellipse 310px 140px at 50% calc(50% + 30px), var(--arrival-panel), transparent 84%);
+  }
+  #arrival-transition.arrival-transition .arrival-shape { width: min(380px, 75vw); height: 144px; }
+  #arrival-transition.arrival-transition .arrival-mark { width: 76px; height: 54px; margin-bottom: 7px; font-size: 32px; }
+  #arrival-transition.arrival-transition .arrival-caption { margin-bottom: 5px; font-size: 11px; }
+  #arrival-transition.arrival-transition .arrival-title { font-size: 21px; line-height: 1.4; }
+  #arrival-transition .arrival-atmosphere::before,
+  #arrival-transition .arrival-atmosphere::after { inset-block: 2%; }
+}
+
+/* Respect both the explicit transition mode and the system preference. Static
+   states remain readable; no translation, opacity pulsing or repeated motion. */
+#arrival-transition.arrival-transition[data-reduced="true"],
+#arrival-transition.arrival-transition[data-reduced="true"] *,
+#arrival-transition.arrival-transition[data-reduced="true"] *::before,
+#arrival-transition.arrival-transition[data-reduced="true"] *::after {
+  animation: none !important;
+  transition: none !important;
+}
+#arrival-transition.arrival-transition[data-reduced="true"] { opacity: 1; }
+#arrival-transition.arrival-transition[data-reduced="true"] .arrival-particle { opacity: .35; }
+@media (prefers-reduced-motion: reduce) {
+  #arrival-transition.arrival-transition,
+  #arrival-transition.arrival-transition *,
+  #arrival-transition.arrival-transition *::before,
+  #arrival-transition.arrival-transition *::after { animation: none !important; transition: none !important; }
+  #arrival-transition.arrival-transition { opacity: 1; }
+  #arrival-transition.arrival-transition .arrival-particle { opacity: .35; }
+}
+#arrival-transition.arrival-transition[data-paused="true"],
+#arrival-transition.arrival-transition[data-paused="true"] *,
+#arrival-transition.arrival-transition[data-paused="true"]::before,
+#arrival-transition.arrival-transition[data-paused="true"]::after,
+#arrival-transition.arrival-transition[data-paused="true"] *::before,
+#arrival-transition.arrival-transition[data-paused="true"] *::after {
+  animation-play-state: paused !important;
+}

@@ -1,0 +1,11 @@
+.zhihu-account[hidden]{display:none!important}
+.zhihu-account{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:5px 12px;font-family:"Microsoft YaHei","PingFang SC",sans-serif;font-size:12px;line-height:1.5;color:#496452;min-width:0}
+.zhihu-account .zhihu-account-name{max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.zhihu-account .zhihu-account-button{appearance:none;min-height:32px;min-width:44px;padding:3px 6px;margin:0;background:transparent;border:0;border-radius:3px;box-shadow:none;color:#496452;font:inherit;font-weight:600;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+.zhihu-account .zhihu-account-button:hover{background:#4964520d;color:#244531;transform:none}
+.zhihu-account .zhihu-account-button:focus-visible{outline:2px solid #496452;outline-offset:2px}
+.zhihu-account .zhihu-account-button:disabled{cursor:wait;opacity:.65}
+.welcome-top .zhihu-account{margin-left:16px;margin-right:auto;flex-shrink:1}
+.welcome-top:has(.zhihu-account:not([hidden])) .edition{display:none}
+.rules-account-slot{margin:0 38px 14px 0;padding-bottom:12px;border-bottom:1px solid #d8d6bb;justify-content:flex-start}
+@media(orientation:landscape) and (max-height:650px){.welcome-top .zhihu-account{font-size:11px;gap:5px}.welcome-top .zhihu-account .zhihu-account-name{max-width:120px}.welcome-top .zhihu-account .zhihu-account-button{min-height:28px}}

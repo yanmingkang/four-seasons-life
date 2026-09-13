@@ -2,13 +2,29 @@
 
 本文件记录当前项目实际包含的外部素材、依赖及参考来源。各来源的许可分别适用；本文件没有把刘看山、知乎内容或所有项目文件统一改为开源许可。
 
-## 当前默认像素美术（2026-09-09）
+## 团队影片授权局部修补（2026-09-13）
+
+用户明确允许本地逐帧修补，并确认有权移除第8格原片水印。`public/cinematics/team-20260912-repaired-20260913/` 仅包含第8、31格的新副本与实际帧封面：第8格局部修补水印背景；第31格替换纸面错误标题为“协商方案”并匹配移动纸面的透视。原片与原集成视频保留，已有AIGC来源元数据未删除；本轮未调用生成API，不改变原素材其余权利边界。
+
+第31格标题由本机微软雅黑粗体栅格化进视频，仅包含文字像素，不在项目中复制或分发字体文件。复现与验证记录见 `docs/影片局部修补-2026-09-13.md`。
+
+## 完整3D环境（2026-09-11）
+
+用户本轮提供的MP4仅用于观察中心设施、外围树林、起伏地形和远景的空间关系。本地抽帧留作验收参考，不用于运行时，不复制视频的模型、贴图、文字标识或音轨。新增连续地形、山坡、树林、村舍、果园、田地等均由本项目程序构建，复用的程序化像素纹理来自本项目。原始参考视频未上传外部服务。
+
+## 当前3D田园美术（2026-09-10）
+
+当前默认入口采用本项目程序化3D模型和像素纹理。图书馆、体育馆、城中村、咖啡书摊参考既有四建筑设计稿制作了有侧墙、屋顶与纵深的实体，其他木屋/店铺/工作坊也做了统一处理；不是对官方《星露谷物语》素材或模型的提取。刘看山仍为参考用户形象制作的本项目模型，相关IP不重新授权。
+
+经用户明确许可，`tools/prepare-landmark-cutouts.py` 对 `docs/art-drafts/life-landmarks-opaque-v2.png` 进行本地边缘连通背景去除。原文件未改变，输出 `public/art/life-landmarks-v1.png` 为带真实alpha的四格设计图集，供可选图册使用；不是模型贴片，也没有再次调用生图服务。前一轮两份不透明生成稿均保留。
+
+## 前一轮像素美术记录（2026-09-09）
 
 六张新增参考图仅用于美术方向与角色识别。程序绘制的刘看山更新了黑白造型、四向视图与待机动作；形象权利边界仍按下文处理。内置 image_gen 新生成的四建筑候选图保存在 `docs/art-drafts/life-landmarks-opaque-v1.png`、`life-landmarks-opaque-v2.png`，尚未作为地图素材启用，因为输出没有真实透明通道。生成方式、提示词与待处理事项见 `docs/参考图美术迭代-2026-09-09.md`；不宣称来自《星露谷物语》官方素材包或获得其授权。
 
 地形、房屋、道具、像素角色等由本项目程序绘制。`public/art/season-trees-v2.png` 使用内置 image_gen 按用户的风格参考生成并修正为透明图集；不是《星露谷物语》原版素材，也不是其官方授权联名。生成提示词和处理记录见 `docs/像素美术与盲选迭代-2026-09-09.md`。刘看山身份与参考内容的权利边界仍按下文单独处理。
 
-以下3D模型保留在项目内用于旧版场景，当前默认像素渲染器不载入它们；历史“当前载入清单”均指此前3D版本。
+以下第三方3D模型仍保留在项目内；本轮程序化3D场景不再等待或载入这些GLTF文件。历史“当前载入清单”均指此前3D版本。
 
 ## 四季配乐（2026-09-09）
 
@@ -54,7 +70,7 @@
 
 ## JavaScript 依赖
 
-当前默认渲染使用浏览器 Canvas 2D；旧3D模块保留 Three.js 依赖，开发与构建使用 Vite。它们的原始许可位于安装包中，版本以 `package-lock.json` 为准。
+当前默认3D渲染使用 Three.js / WebGL，开发与构建使用 Vite。它们的原始许可位于安装包中，版本以 `package-lock.json` 为准。
 
 - Three.js：MIT，Copyright © 2010–2026 three.js authors；本地 `node_modules/three/LICENSE`。
 - Vite：MIT，Copyright (c) 2019-present, VoidZero Inc. and Vite contributors；本地 `node_modules/vite/LICENSE.md`，该文件还记录其所含第三方代码的许可。
@@ -85,3 +101,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ```
+# Sharing card dependencies (2026-09-11)
+
+The local portrait card uses `qrcode` 1.5.4 and its `dijkstrajs` dependency under the MIT license. Their complete notices are included in `public/share-card-licenses.txt` and shipped with the production build. The card illustration and companion UI portrait are native code drawings authored for this game; neither is represented as official Zhihu character art.

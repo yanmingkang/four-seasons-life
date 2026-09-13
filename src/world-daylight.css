@@ -1,0 +1,46 @@
+.daylight-switch {
+  position: absolute;
+  top: 76px;
+  right: max(22px, env(safe-area-inset-right));
+  z-index: 12;
+  display: flex;
+  gap: 3px;
+  padding: 5px;
+  border: 1px solid #fff8eac9;
+  border-radius: 12px;
+  background: #fffaf0ed;
+  box-shadow: 0 3px 15px #253f3a18;
+  pointer-events: auto;
+}
+.daylight-switch button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 7px 13px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: #495a50;
+  font: 500 14px/1.2 "Microsoft YaHei", "PingFang SC", sans-serif;
+  cursor: pointer;
+  transition: background-color .2s, color .2s;
+}
+.daylight-switch button:hover { background: #e4eadf; }
+.daylight-switch button[aria-pressed="true"] { background: #466958; color: #fffdf5; }
+.daylight-switch [data-daylight="sunset"][aria-pressed="true"] { background: #985a3b; color: #fff9e9; }
+.daylight-switch button:focus-visible { outline: 3px solid #244f6c; outline-offset: 3px; }
+.daylight-switch button:disabled { opacity: .45; cursor: default; }
+.daylight-switch svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.65; stroke-linecap: round; stroke-linejoin: round; }
+/* Cards own the reading area. display:none also removes these buttons from
+   pointer hits and keyboard focus, without resetting the selected lighting. */
+.experience:is([data-stage="choice"], [data-stage="feedback"]) > .daylight-switch {
+  display: none;
+}
+@media (max-height: 650px) and (orientation: landscape) {
+  .daylight-switch { top: 80px; right: max(12px, env(safe-area-inset-right)); padding: 3px; gap: 1px; }
+  .daylight-switch button { min-height: 32px; padding: 5px 10px; gap: 5px; }
+}
+@media (orientation: portrait) { .daylight-switch { visibility: hidden; } }
+@media (prefers-reduced-motion: reduce) { .daylight-switch button { transition: none; } }
