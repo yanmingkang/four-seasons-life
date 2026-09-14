@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {narrationKey} from '../src/ai-client.js';
-import {welcomeMarkup,resumePromptMarkup,eventMarkup,feedbackMarkup,compactScene} from '../src/presentation.js';
+import {welcomeMarkup,talentDetailsMarkup,resumePromptMarkup,eventMarkup,feedbackMarkup,compactScene} from '../src/presentation.js';
 import {summaryChart} from '../src/resource-ui.js';
 import {newGame,land,choose,snapshot} from '../src/engine.js';
 import {EVENTS} from '../src/events.js';
@@ -27,7 +27,7 @@ test('empty or missing setup names leave the welcome nickname blank with an opti
   for(const setup of [{name:'',talent:'defense'},{name:undefined,talent:'defense'},{talent:'defense'}]){
     const input=nicknameInput(welcomeMarkup(setup,null));
     assert.match(input,/\bvalue=""/);
-    assert.match(input,/\bplaceholder="填写你的昵称（选填）"/);
+    assert.match(input,/\bplaceholder="昵称（选填）"/);
     assert.doesNotMatch(input,/\b(?:value|placeholder)="(?:刘看山|undefined|null)"/);
   }
 });
@@ -58,7 +58,8 @@ test('the welcome page has one journey entry with or without a saved game',()=>{
   const saved={game:snapshot(newGame('full',{name:'旧旅程玩家'})),seconds:36};
   for(const record of [undefined,null,saved]){
     const markup=welcomeMarkup({name:'',talent:'defense'},record);
-    assert.equal((markup.match(/<button\b/g)||[]).length,1);
+    assert.equal((markup.match(/<button\b/g)||[]).length,2,'One journey entry plus a non-starting explanation button');
+    assert.match(markup,/<button type="button" id="talent-details" aria-haspopup="dialog"/);
     assert.equal((markup.match(/id="start-full"/g)||[]).length,1);
     assert.match(markup,/走进我的四季/);
     assert.doesNotMatch(markup,/id="(?:start-demo|start-sample|resume)"/);
@@ -66,6 +67,21 @@ test('the welcome page has one journey entry with or without a saved game',()=>{
     assert.match(markup,/value="defense" checked/);
     assert.match(nicknameInput(markup),/value=""/);
     assert.match(markup,/5,000/);
+  }
+});
+
+test('compact talent cards reuse the same complete rules without duplicate inputs',()=>{
+  for(const selected of ['defense','ambitious','optimistic']){
+    const setup={name:'小雨',talent:selected},before=structuredClone(setup);
+    const markup=welcomeMarkup(setup,null),details=talentDetailsMarkup();
+    assert.equal((markup.match(/id="character-name"/g)||[]).length,1);
+    assert.equal((markup.match(/type="radio"/g)||[]).length,3);
+    assert.equal((markup.match(/ checked/g)||[]).length,1);
+    assert.match(markup,new RegExp(`value="${selected}" checked`));
+    for(const label of ['稳健防守型','锐意进取型','乐天知命型'])assert.ok(markup.includes(label)&&details.includes(label));
+    for(const rule of ['首次甩锅抵挡事件本身的消耗','累积疲惫仍需休息','事件专业收益 +20%','负面事件情绪消耗 +10%','自动恢复 15 点情绪','不超过情绪上限'])assert.ok(markup.includes(rule)&&details.includes(rule));
+    assert.doesNotMatch(details,/<input|id="start|<script/);
+    assert.deepEqual(setup,before);
   }
 });
 

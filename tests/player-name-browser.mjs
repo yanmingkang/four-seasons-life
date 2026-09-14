@@ -33,7 +33,7 @@ try{
     await page.goto(base);
     const input=page.locator('#character-name');await input.waitFor();
     assert.equal(await input.inputValue(),'');
-    assert.equal(await input.getAttribute('placeholder'),'填写你的昵称（选填）');
+    assert.equal(await input.getAttribute('placeholder'),'昵称（选填）');
     assert.equal(await page.locator('#player-name').textContent(),'旅人');
     if(scenario.old){
       await page.locator('#start-full').click();

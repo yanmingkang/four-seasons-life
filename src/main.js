@@ -20,6 +20,7 @@ import './welcome-entry.css';
 import './arrival-seasons.css';
 import './zhihu-auth.css';
 import './mobile-layout.css';
+import './mobile-cover.css';
 import {mountMobileViewport} from './mobile-viewport.js';
 import {createZhihuAuthUI,saveZhihuLoginDraft,restoreZhihuLoginDraft} from './zhihu-auth-ui.js';
 import {mountSharePreview} from './share-preview.js';
@@ -38,7 +39,7 @@ import {referenceLandmarkId} from './reference-world-plan.js';
 import {playCinematic,cancelCinematic,getCinematic} from './cinematics.js';
 import './cinematic-player.css';
 import {resourceIcon,resourceEffects,summaryChart} from './resource-ui.js';
-import {welcomeMarkup,resumePromptMarkup,eventMarkup,feedbackMarkup,rulesMarkup,professionalTitle} from './presentation.js';
+import {welcomeMarkup,talentDetailsMarkup,resumePromptMarkup,eventMarkup,feedbackMarkup,rulesMarkup,professionalTitle} from './presentation.js';
 import {World,fallbackWorld} from './world.js';
 import {EVENTS,SEASONS} from './events.js';
 import {SOURCES,SOURCE_NOTE} from './sources.js';
@@ -257,7 +258,8 @@ function renderStory(){
     $('.welcome-top').insertAdjacentHTML('beforeend','<div class="welcome-account-slot" hidden></div>');
     zhihuAuth.mount($('.welcome-account-slot'));
     const legacy=readLegacy();
-    if(legacy?.available){$('.welcome-settings-scroll').insertAdjacentHTML('beforeend',`<label class="life-inheritance"><input id="inherit-next" type="checkbox" ${inheritNext?'checked':''}/><span>带上上一程的积累<small>${escape(legacyBonusText(legacy))} · 固定保留，不重复叠加</small></span></label>`);$('#inherit-next').onchange=e=>{inheritNext=e.target.checked;};}
+    if(legacy?.available){$('.welcome-extras').insertAdjacentHTML('afterbegin',`<label class="life-inheritance"><input id="inherit-next" type="checkbox" ${inheritNext?'checked':''}/><span>带上上一程的积累<small>${escape(legacyBonusText(legacy))} · 固定保留，不重复叠加</small></span></label>`);$('#inherit-next').onchange=e=>{inheritNext=e.target.checked;};}
+    $('#talent-details').onclick=()=>openDialog(talentDetailsMarkup()+(legacy?.available?`<p class="talent-inheritance-note">上一程的积累：${escape(legacyBonusText(legacy))} · 固定保留，不重复叠加。</p>`:''),'talent-info-dialog');
     $('#start-full').onclick=enterJourney;updateLoginEntry();return;
   }
   if(state.phase==='ready'){

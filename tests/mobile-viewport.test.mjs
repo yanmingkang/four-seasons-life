@@ -106,15 +106,64 @@ test('pinch zoom keeps layout dimensions and ignores visual viewport panning', (
   cleanup();
 });
 
+test('mobile resize escapes an overflowing inner viewport without retaining the old game size', () => {
+  const env = fixture();
+  Object.assign(env.root, { clientWidth: 844, clientHeight: 300 });
+  Object.assign(env.window, { innerWidth: 844, innerHeight: 300 });
+  Object.assign(env.visualViewport, { width: 844, height: 300 });
+  const cleanup = env.mount();
+  assert.deepEqual(env.values(), { width: '844px', height: '300px', top: '0px', left: '0px' });
+
+  // Reproduced on mobile Chrome: the previous 844px game still overflows a
+  // newly 667px viewport, expanding innerWidth and triggering auto-shrink.
+  Object.assign(env.root, { clientWidth: 667, clientHeight: 280 });
+  Object.assign(env.window, { innerWidth: 845, innerHeight: 355 });
+  Object.assign(env.visualViewport, { width: 844, height: 354.5, scale: 0.7903 });
+  env.window.dispatch('resize');
+  env.visualViewport.dispatch('resize');
+  env.tick();
+  assert.deepEqual(env.values(), { width: '667px', height: '280px', top: '0px', left: '0px' });
+  assert.equal(env.visualViewport.scale, 0.7903, 'the module changes layout, never the browser zoom');
+
+  Object.assign(env.window, { innerWidth: 667, innerHeight: 280 });
+  Object.assign(env.visualViewport, { width: 667, height: 280, scale: 1 });
+  env.visualViewport.dispatch('resize');
+  env.tick();
+  assert.deepEqual(env.values(), { width: '667px', height: '280px', top: '0px', left: '0px' });
+
+  Object.assign(env.root, { clientWidth: 844, clientHeight: 390 });
+  Object.assign(env.window, { innerWidth: 844, innerHeight: 390 });
+  Object.assign(env.visualViewport, { width: 844, height: 390 });
+  env.window.dispatch('resize');
+  env.tick();
+  assert.deepEqual(env.values(), { width: '844px', height: '390px', top: '0px', left: '0px' });
+  cleanup();
+});
+
+test('a user pinch zoom out preserves the root layout rather than expanding the game to innerWidth', () => {
+  const env = fixture();
+  const cleanup = env.mount();
+  Object.assign(env.window, { innerWidth: 780, innerHeight: 1688 });
+  Object.assign(env.visualViewport, { scale: 0.5, width: 780, height: 1440, offsetTop: 30, offsetLeft: 20 });
+  env.visualViewport.dispatch('resize');
+  env.visualViewport.dispatch('scroll');
+  env.tick();
+  assert.deepEqual(env.values(), { width: '390px', height: '844px', top: '0px', left: '0px' });
+  assert.equal(env.visualViewport.scale, 0.5, 'native pinch zoom remains unchanged');
+  cleanup();
+});
+
 test('window resize and pageshow refresh layout without VisualViewport support', () => {
   const env = fixture({ visual: false });
   const cleanup = env.mount();
   assert.deepEqual(env.values(), { width: '390px', height: '844px', top: '0px', left: '0px' });
   Object.assign(env.window, { innerWidth: 844, innerHeight: 390 });
+  Object.assign(env.root, { clientWidth: 844, clientHeight: 390 });
   env.window.dispatch('resize');
   env.tick();
   assert.deepEqual(env.values(), { width: '844px', height: '390px', top: '0px', left: '0px' });
   env.window.innerHeight = 360;
+  env.root.clientHeight = 360;
   env.window.dispatch('pageshow');
   env.tick();
   assert.equal(env.values().height, '360px');
@@ -169,15 +218,20 @@ test('invalid visual measurements fall back to positive layout sizes', () => {
   cleanup();
 });
 
-test('layout fallback uses root dimensions, then known sizes during transient zero measurements', () => {
+test('layout uses root dimensions, then inner dimensions and known sizes during transient zero measurements', () => {
   const env = fixture({ visual: false });
   Object.assign(env.window, { innerWidth: 0, innerHeight: Infinity });
   const cleanup = env.mount();
   assert.deepEqual(env.values(), { width: '390px', height: '844px', top: '0px', left: '0px' });
   Object.assign(env.root, { clientWidth: 0, clientHeight: 0 });
+  Object.assign(env.window, { innerWidth: 380, innerHeight: 700 });
   env.window.dispatch('resize');
   env.tick();
-  assert.deepEqual(env.values(), { width: '390px', height: '844px', top: '0px', left: '0px' });
+  assert.deepEqual(env.values(), { width: '380px', height: '700px', top: '0px', left: '0px' });
+  Object.assign(env.window, { innerWidth: 0, innerHeight: Infinity });
+  env.window.dispatch('resize');
+  env.tick();
+  assert.deepEqual(env.values(), { width: '380px', height: '700px', top: '0px', left: '0px' });
   cleanup();
   const zeroEnv = fixture({ visual: false });
   Object.assign(zeroEnv.window, { innerWidth: 0, innerHeight: 0 });

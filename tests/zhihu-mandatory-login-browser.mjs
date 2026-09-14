@@ -159,9 +159,24 @@ async function resumeSaved(run,expected){
   assert.deepEqual(await gameOf(run.page),expected,'Resuming must retain replay-valid progress');
   assert.equal(await run.page.locator('#player-name').innerText(),restore(expected).name);
 }
+async function openAccount(run){
+  await run.page.locator('#rules-button').click();await run.page.locator('#dialog[open]').waitFor();
+  const account=run.page.locator('.rules-account-slot .zhihu-account-name');await account.waitFor();
+  assert.equal(await account.innerText(),'知乎 · 知乎账号名字不覆盖玩家','Rules must expose the authenticated account');
+  const button=run.page.locator('.rules-account-slot [data-auth-action="logout"]');await button.waitFor();
+  assert.equal(await button.isEnabled(),true,'The visible account must offer logout');
+  run.row.accountGeometry=await geometry(run.page,'.rules-account-slot .zhihu-account-name,.rules-account-slot [data-auth-action="logout"]');
+  return button;
+}
+async function assertWelcomeAccount(run){
+  // The short landscape cover hides its title strip, including this slot.
+  // Check the mounted identity, then verify its user-visible rules entry.
+  const account=run.page.locator('.welcome-account-slot .zhihu-account-name');await account.waitFor({state:'attached'});
+  assert.equal(await account.textContent(),'知乎 · 知乎账号名字不覆盖玩家','Callback/focus must mount the authenticated account');
+  await openAccount(run);await run.page.locator('#dialog-close').click();await run.page.locator('#dialog[open]').waitFor({state:'hidden'});
+}
 async function logout(run){
-  await run.page.locator('#rules-button').click();await run.page.locator('.rules-account-slot [data-auth-action="logout"]').waitFor();
-  await run.page.locator('.rules-account-slot [data-auth-action="logout"]').click();await run.page.locator('.experience[data-stage="welcome"]').waitFor();
+  const button=await openAccount(run);await button.click();await run.page.locator('.experience[data-stage="welcome"]').waitFor();
   assert.equal(await run.page.locator('#dialog[open]').count(),0,'Logout closes in-game dialogs');
 }
 async function finish(run){
@@ -181,7 +196,7 @@ try{
       step(`${run.row.id}-anonymous-main-entry`);await run.page.locator('#character-name').fill(name);await screenshot(run,'anonymous-cover');
       await expectAuthNavigation(run);
       run.control.mode='user';await openGame(run,'?auth=success');
-      await run.page.locator('.welcome-account-slot .zhihu-account-name').waitFor();
+      step(`${run.row.id}-authenticated-cover-account`);await assertWelcomeAccount(run);
       await assertWelcome(run,{name,save:null});
       assert.equal(await run.page.evaluate(key=>sessionStorage.getItem(key),ZHIHU_LOGIN_DRAFT_KEY),null,'One-use player setup draft is consumed');
       await assertNoAutoNavigation(run,1);await screenshot(run,'authenticated-cover');
@@ -201,7 +216,7 @@ try{
       const record=pendingJourney(),run=await setup({id:`saved-expiration-${width}`,width,height,record});
       step(`${run.row.id}-anonymous-cannot-resume`);assert.equal(await run.page.locator('#resume').count(),0);
       await expectAuthNavigation(run);await openGame(run);await assertWelcome(run,{save:run.raw});await assertNoAutoNavigation(run,1);
-      run.control.mode='user';await refreshFocus(run);await run.page.locator('.welcome-account-slot .zhihu-account-name').waitFor();
+      run.control.mode='user';await refreshFocus(run);await assertWelcomeAccount(run);
       step(`${run.row.id}-authenticated-resume`);await resumeSaved(run,record.game);
       assert.deepEqual(JSON.parse(await rawSave(run.page)).practiceInvitation,record.practiceInvitation);
       step(`${run.row.id}-expiration-focus`);run.control.mode='guest';await refreshFocus(run);await assertWelcome(run);

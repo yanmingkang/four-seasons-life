@@ -45,9 +45,13 @@ export function mountMobileViewport({
 
   function syncViewport() {
     if (disposed) return;
+    // A mobile browser can expand innerWidth/innerHeight to include an old,
+    // overflowing game size and then auto-scale it after rotation or resize.
+    // The root client box remains the layout viewport: prefer it so our own
+    // previous CSS dimensions cannot keep that oversized layout alive.
     const measuredLayout = {
-      width: positiveDimension(targetWindow.innerWidth, root.clientWidth),
-      height: positiveDimension(targetWindow.innerHeight, root.clientHeight),
+      width: positiveDimension(root.clientWidth, targetWindow.innerWidth),
+      height: positiveDimension(root.clientHeight, targetWindow.innerHeight),
     };
     const layout = {};
     for (const dimension of ['width', 'height']) {
