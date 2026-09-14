@@ -1,7 +1,7 @@
 /* One scrollable reading surface, with controls outside its scrolling area. */
 dialog.share-dialog{
-  width:min(1080px,calc(100vw - 32px));height:min(920px,calc(100dvh - 32px));
-  max-width:none;max-height:calc(100dvh - 32px);padding:0;overflow:hidden;
+  width:min(1080px,calc(100cqw - 32px));height:min(920px,calc(100cqh - 32px));
+  max-width:none;max-height:calc(100cqh - 32px);padding:0;overflow:hidden;
   background:#faf5e6;color:#344d41;border:2px solid #c2ad80;border-radius:8px;
   box-shadow:0 24px 90px #17332870;
 }
@@ -28,8 +28,8 @@ dialog.share-dialog{
 .share-dialog .share-header h2:focus{outline:none;}
 .share-dialog .share-loading{grid-template-rows:auto 1fr;}
 .share-dialog #share-progress{align-self:center;text-align:center;padding:24px;font-size:14px;color:#526f55;}
-@media(max-height:550px){
-  dialog.share-dialog{width:calc(100vw - 24px);height:calc(100dvh - 16px);max-height:calc(100dvh - 16px);}
+@container game-stage (max-height:550px){
+  dialog.share-dialog{width:calc(100cqw - 24px);height:calc(100cqh - 16px);max-height:calc(100cqh - 16px);}
   .share-header{padding:10px 58px 10px 16px;gap:12px;}
   .share-dialog .share-header h2{font-size:18px;}
   .share-dialog .dialog-close{width:32px;height:32px;right:12px;top:11px;}
@@ -39,7 +39,7 @@ dialog.share-dialog{
   .share-dialog .share-caption{font-size:11px;margin-bottom:5px;}
   .share-dialog .share-actions>*{min-height:38px;min-width:136px;padding:7px 15px;font-size:13px;}
 }
-@media(max-width:540px){
+@container game-stage (max-width:540px){
   .share-header{padding-left:14px;gap:9px;flex-wrap:wrap;}
   .share-dialog .share-header h2{font-size:18px;flex-basis:100%;}
   .share-footer{padding:10px 12px 12px;}

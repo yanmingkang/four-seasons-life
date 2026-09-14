@@ -20,9 +20,8 @@ import './welcome-entry.css';
 import './arrival-seasons.css';
 import './zhihu-auth.css';
 import './mobile-layout.css';
-import './mobile-cover.css';
-import './mobile-full-chrome.css';
 import {mountMobileViewport} from './mobile-viewport.js';
+import {mountDesktopStage} from './desktop-stage.js';
 import {createZhihuAuthUI,saveZhihuLoginDraft,restoreZhihuLoginDraft} from './zhihu-auth-ui.js';
 import {mountSharePreview} from './share-preview.js';
 import {daylightMarkup,mountDaylightSwitch} from './world-daylight.js';
@@ -39,6 +38,7 @@ import {referenceTownMarkup} from './reference-gallery.js';
 import {referenceLandmarkId} from './reference-world-plan.js';
 import {playCinematic,cancelCinematic,getCinematic} from './cinematics.js';
 import './cinematic-player.css';
+import './desktop-stage.css';
 import {resourceIcon,resourceEffects,summaryChart} from './resource-ui.js';
 import {welcomeMarkup,talentDetailsMarkup,resumePromptMarkup,eventMarkup,feedbackMarkup,rulesMarkup,professionalTitle} from './presentation.js';
 import {World,fallbackWorld} from './world.js';
@@ -126,6 +126,8 @@ $('#app').innerHTML=`
 </main>
 <dialog id="dialog"><button id="dialog-close" class="dialog-close icon-button" aria-label="关闭">${svg('close')}</button><div id="dialog-content"></div></dialog><div id="toast" class="toast" role="status"></div><span id="announcer" class="sr-only" aria-live="polite"></span>`;
 
+const unmountViewport=mountMobileViewport();
+const unmountStage=mountDesktopStage();
 function announce(text){$('#announcer').textContent=text;}
 function toast(text){$('#toast').textContent=text;$('#toast').classList.add('visible');clearTimeout(toast.timer);toast.timer=setTimeout(()=>$('#toast').classList.remove('visible'),3400);}
 function save(){
@@ -555,6 +557,7 @@ $('#view-follow').onclick=()=>selectCamera('follow');$('#view-overview').onclick
 window.addEventListener('beforeunload',save);
 window.addEventListener('pagehide',event=>{
   if(event.persisted){music?.setPaused(true);return;}
+  unmountStage();unmountViewport();
   zhihuAuth.dispose();
   stopPractice(true);
   stopSample();
@@ -575,5 +578,4 @@ function syncOrientation(){
   if(blocked)cancelDeparture();else {if(portraitDialog){portraitDialog=false;dialog.showModal();dialog.scrollTop=portraitDialogScroll;}queueDeparture();}
   syncInteraction();
 }
-mountMobileViewport();
 window.addEventListener('resize',syncOrientation);syncOrientation();

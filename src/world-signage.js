@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {screenRectToLocal} from './screen-coordinates.js';
 
 export const overlaps=(a,b,gap=6)=>a.x<b.x+b.width+gap&&a.x+a.width+gap>b.x&&a.y<b.y+b.height+gap&&a.y+a.height+gap>b.y;
 
@@ -50,7 +51,7 @@ export class WorldSignage{
     for(const hud of this.hud){
       if(!hud.isConnected||hud.hidden)continue;
       const style=getComputedStyle(hud);if(style.display==='none'||style.visibility==='hidden'||style.opacity==='0')continue;
-      const r=hud.getBoundingClientRect();if(r.width&&r.height)reserved.push({x:r.x-containerRect.x,y:r.y-containerRect.y,width:r.width,height:r.height});
+      const r=hud.getBoundingClientRect();if(r.width&&r.height)reserved.push(screenRectToLocal(r,containerRect,width,height));
     }
     if(w.cameraMode==='follow'){
       const actor=this.vector.copy(w.character.position);actor.y+=1.4;actor.project(w.camera);

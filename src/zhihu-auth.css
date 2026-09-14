@@ -8,4 +8,4 @@
 .welcome-top .zhihu-account{margin-left:16px;margin-right:auto;flex-shrink:1}
 .welcome-top:has(.zhihu-account:not([hidden])) .edition{display:none}
 .rules-account-slot{margin:0 38px 14px 0;padding-bottom:12px;border-bottom:1px solid #d8d6bb;justify-content:flex-start}
-@media(orientation:landscape) and (max-height:650px){.welcome-top .zhihu-account{font-size:11px;gap:5px}.welcome-top .zhihu-account .zhihu-account-name{max-width:120px}.welcome-top .zhihu-account .zhihu-account-button{min-height:28px}}
+@container game-stage (orientation:landscape) and (max-height:650px){.welcome-top .zhihu-account{font-size:11px;gap:5px}.welcome-top .zhihu-account .zhihu-account-name{max-width:120px}.welcome-top .zhihu-account .zhihu-account-button{min-height:28px}}

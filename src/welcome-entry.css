@@ -1,12 +1,12 @@
-dialog.journey-entry-dialog{width:min(520px,calc(100vw - 32px));padding:30px;background:#fff8e2;border:2px solid #b8955f;border-radius:8px}
+dialog.journey-entry-dialog{width:min(520px,calc(100cqw - 32px));padding:30px;background:#fff8e2;border:2px solid #b8955f;border-radius:8px}
 .journey-entry-dialog h2{font-size:25px;padding-right:32px;margin:12px 0 16px}
 .journey-entry-dialog p{font-size:14px;line-height:1.7;color:#5d7055}
 .journey-entry-dialog button:not(.dialog-close){display:block;width:100%;margin:10px 0 0;min-height:42px}
 .journey-entry-dialog small{display:block;font-size:11px;color:#82715a;margin-top:12px;line-height:1.6}
-@media(orientation:landscape) and (max-height:420px){dialog.journey-entry-dialog{padding:18px 24px}.journey-entry-dialog h2{font-size:21px;margin:8px 0}.journey-entry-dialog p{font-size:12px;margin:8px 0}.journey-entry-dialog button:not(.dialog-close){min-height:36px;padding:8px 12px;margin-top:8px}}
+@container game-stage (orientation:landscape) and (max-height:420px){dialog.journey-entry-dialog{padding:18px 24px}.journey-entry-dialog h2{font-size:21px;margin:8px 0}.journey-entry-dialog p{font-size:12px;margin:8px 0}.journey-entry-dialog button:not(.dialog-close){min-height:36px;padding:8px 12px;margin-top:8px}}
 /* One scroll owner for the complete form, including optional inheritance.
    A fieldset's intrinsic minimum size must not push the entry below the card. */
-@media(orientation:landscape) and (max-height:650px){
+@container game-stage (orientation:landscape) and (max-height:650px){
   .welcome-panel{height:100%;min-height:0;display:flex;flex-direction:column;overflow:hidden}
   .welcome-panel .welcome-top{flex:none}
   .welcome-panel .welcome-layout{flex:1;min-height:0;align-items:stretch}

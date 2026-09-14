@@ -13,6 +13,6 @@ test('card visibility does not replace the normal map display or the portrait gu
   const css = await fs.readFile(new URL('../src/world-daylight.css', import.meta.url), 'utf8');
   const base = css.match(/^\.daylight-switch\s*\{([^}]+)\}/);
   assert.match(base?.[1] || '', /\bdisplay\s*:\s*flex\s*;/);
-  assert.match(css, /@media\s*\(orientation:\s*portrait\)\s*\{\s*\.daylight-switch\s*\{\s*visibility:\s*hidden/);
+  assert.match(css, /@container\s+game-stage\s*\(orientation:\s*portrait\)\s*\{\s*\.daylight-switch\s*\{\s*visibility:\s*hidden/);
   assert.doesNotMatch(css, /\[data-stage="(?:ready|welcome|explore)"\]/, 'Map, welcome and landmark browsing keep their existing controls');
 });

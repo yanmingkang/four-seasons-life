@@ -15,8 +15,8 @@
 .mentor-preview{margin-top:14px;font:400 14px/1.7 "Microsoft YaHei","PingFang SC",sans-serif;color:#45563f}
 .mentor-preview .mentor-note{font-size:14px;margin-bottom:0}
 .choice-context{display:none}
-@media(max-width:900px){.event-key .scene-moment{font-size:14px;margin:10px 0}.event-key .choice{padding:10px 12px}.event-ordinary .event-scene{font-size:16px}.rhythm-status{margin:10px 0}.inventory-nudge{margin-top:10px}}
-@media(orientation:landscape) and (max-height:500px){
+@container game-stage (max-width:900px){.event-key .scene-moment{font-size:14px;margin:10px 0}.event-key .choice{padding:10px 12px}.event-ordinary .event-scene{font-size:16px}.rhythm-status{margin:10px 0}.inventory-nudge{margin-top:10px}}
+@container game-stage (orientation:landscape) and (max-height:500px){
   .event-panel .panel-topline{position:absolute;top:12px;left:20px;right:55%;margin:0}
   .event-panel .event-story{padding-top:38px}
   .event-panel .choice strong{font-size:14px;line-height:1.5}

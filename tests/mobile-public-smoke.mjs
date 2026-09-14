@@ -10,6 +10,20 @@ const expected=(await fs.readFile(new URL('../dist/index.html',import.meta.url),
 const report={passed:false,expectedEntry:expected,checks:[],pageErrors:[],blockedWrites:[],realModelCalls:0,realAuthorizationFlows:0,network:'Only this isolated browser uses --no-proxy-server; system configuration unchanged.'};
 const talentValues=['defense','ambitious','optimistic'];
 const coverSelectors=[...talentValues.map(value=>`.talent-picker label:has(input[value="${value}"])`),'#character-name','#start-full'];
+const paritySelectors=['.topbar','.brand','.brand small','.status-strip','.player-badge','.money-resource','.mood-resource','.exp-resource','.journey-resource','#season-progress','.welcome-panel','.welcome-top','.welcome-layout','.welcome-story','.welcome-setup','.welcome-illustration img','.welcome-illustration i','.welcome-kicker','.welcome-panel h1','.intro-copy','.starter-resources','.welcome-name-field','.talent-picker',...coverSelectors,...talentValues.flatMap(value=>[`.talent-picker label:has(input[value="${value}"]) b`,`.talent-picker label:has(input[value="${value}"]) .talent-effect`,`.talent-picker label:has(input[value="${value}"]) .talent-note`]),'.welcome-actions','.welcome-fineprint','.bottom-tools','#journal-button','#rules-button','#sound-button','#view-follow','#view-overview','#zoom-out','#reset-view','#zoom-in','#town-gallery','.auto-setting','#all-sources'];
+const snapshot=page=>page.evaluate(selectors=>selectors.map(selector=>{const node=document.querySelector(selector),css=getComputedStyle(node),r=node.getBoundingClientRect();return {selector,rect:r.toJSON(),fonts:Object.fromEntries(['fontFamily','fontSize','fontWeight','lineHeight'].map(key=>[key,css[key]]))};}),paritySelectors);
+let desktopReference;
+async function sameDesktopComposition(page,width,height){
+  const scale=Math.min(width/1904,height/942),offset={left:(width-1904*scale)/2,top:(height-942*scale)/2};
+  const stage=await page.locator('#app').evaluate(node=>({width:node.clientWidth,height:node.clientHeight,rect:node.getBoundingClientRect().toJSON()}));
+  assert.equal(stage.width,1904);assert.equal(stage.height,942);
+  const current=await snapshot(page);
+  for(const [i,node]of current.entries()){
+    assert.deepEqual(node.fonts,desktopReference[i].fonts,`${node.selector}: original desktop font settings`);
+    for(const key of ['left','top','width','height'])assert.ok(Math.abs(node.rect[key]-(desktopReference[i].rect[key]*scale+(offset[key]||0)))<1.1,`${width}x${height}: ${node.selector} ${key} must scale with the desktop`);
+  }
+  report.checks.push({width,height,phase:'uniform-desktop-composition',scale,nodes:current.length,fontsUnchanged:true});
+}
 async function checkCover(page,width,height){
   // Check the whole form before selecting anything. Locator.check/scrollIntoView
   // can otherwise make a clipped option reachable and disguise a bad first view.
@@ -20,12 +34,13 @@ async function checkCover(page,width,height){
     for(let p=node.parentElement;p;p=p.parentElement){
       const style=getComputedStyle(p),b=p.getBoundingClientRect();
       if(style.display==='contents')continue;
+      const sx=p.offsetWidth?b.width/p.offsetWidth:1,sy=p.offsetHeight?b.height/p.offsetHeight:1;
       if(/auto|scroll|hidden|clip/.test(style.overflowX)){
-        const fits=r.left>=b.left+p.clientLeft-1&&r.right<=b.left+p.clientLeft+p.clientWidth+1;
+        const fits=r.left>=b.left+p.clientLeft*sx-1&&r.right<=b.left+(p.clientLeft+p.clientWidth)*sx+1;
         if(!fits)clips.push({axis:'x',node:p.tagName+'.'+p.className,start:b.left+p.clientLeft,end:b.left+p.clientLeft+p.clientWidth});within=within&&fits;
       }
       if(/auto|scroll|hidden|clip/.test(style.overflowY)){
-        const fits=r.top>=b.top+p.clientTop-1&&r.bottom<=b.top+p.clientTop+p.clientHeight+1;
+        const fits=r.top>=b.top+p.clientTop*sy-1&&r.bottom<=b.top+(p.clientTop+p.clientHeight)*sy+1;
         if(!fits)clips.push({axis:'y',node:p.tagName+'.'+p.className,start:b.top+p.clientTop,end:b.top+p.clientTop+p.clientHeight});within=within&&fits;
       }
     }
@@ -56,8 +71,9 @@ async function fullContent(page,width,height){
         const css=getComputedStyle(p),r=p.getBoundingClientRect();
         if(css.display==='none'||css.visibility==='hidden'||css.opacity==='0')visible=false;
         if(css.display==='contents')continue;
-        if(/auto|scroll|hidden|clip/.test(css.overflowX)){clip.left=Math.max(clip.left,r.left+p.clientLeft);clip.right=Math.min(clip.right,r.left+p.clientLeft+p.clientWidth);}
-        if(/auto|scroll|hidden|clip/.test(css.overflowY)){clip.top=Math.max(clip.top,r.top+p.clientTop);clip.bottom=Math.min(clip.bottom,r.top+p.clientTop+p.clientHeight);}
+        const sx=p.offsetWidth?r.width/p.offsetWidth:1,sy=p.offsetHeight?r.height/p.offsetHeight:1;
+        if(/auto|scroll|hidden|clip/.test(css.overflowX)){clip.left=Math.max(clip.left,r.left+p.clientLeft*sx);clip.right=Math.min(clip.right,r.left+(p.clientLeft+p.clientWidth)*sx);}
+        if(/auto|scroll|hidden|clip/.test(css.overflowY)){clip.top=Math.max(clip.top,r.top+p.clientTop*sy);clip.bottom=Math.min(clip.bottom,r.top+(p.clientTop+p.clientHeight)*sy);}
       }
       const walker=document.createTreeWalker(node,NodeFilter.SHOW_TEXT);let text;
       while(text=walker.nextNode()){
@@ -84,12 +100,20 @@ try{
   browser=await chromium.launch({channel:'chrome',headless:true,args:['--no-proxy-server','--enable-webgl','--use-gl=angle','--use-angle=d3d11','--ignore-gpu-blocklist']});
   const ctx=await browser.newContext({viewport:{width:844,height:300},isMobile:true,hasTouch:true,deviceScaleFactor:1,reducedMotion:'reduce'});
   page=await ctx.newPage();page.setDefaultTimeout(90000);page.on('pageerror',e=>report.pageErrors.push(e.message));
-  await ctx.route('**/*',route=>{
+  const readOnly=route=>{
     const url=new URL(route.request().url());
     if(url.origin!==base&&!['data:','blob:'].includes(url.protocol))return route.abort();
     if(!['GET','HEAD'].includes(route.request().method())){report.blockedWrites.push(url.pathname);return route.abort();}
     return route.continue();
-  });
+  };
+  await ctx.route('**/*',readOnly);
+  const desktopCtx=await browser.newContext({viewport:{width:1904,height:942},reducedMotion:'reduce'});
+  await desktopCtx.route('**/*',readOnly);
+  const desktop=await desktopCtx.newPage();
+  await desktop.goto(base,{timeout:90000,waitUntil:'domcontentloaded'});
+  await desktop.locator('#scene[data-assets="ready"][data-renderer="webgl"]').waitFor({timeout:90000});
+  await desktop.waitForFunction(()=>document.querySelector('#start-full')?.getAttribute('aria-busy')==='false',null,{timeout:30000});
+  desktopReference=await snapshot(desktop);await desktopCtx.close();
   const start=Date.now(),response=await page.goto(base,{timeout:90000,waitUntil:'domcontentloaded'});
   assert.equal(response.status(),200);assert.ok((await response.text()).includes(expected),'Worker homepage must serve the new build');
   await page.locator('#scene[data-assets="ready"][data-renderer="webgl"]').waitFor();report.firstSceneMs=Date.now()-start;
@@ -102,6 +126,7 @@ try{
     assert.equal(await page.locator('.daylight-switch').isVisible(),false);
     await checkCover(page,width,height);
     await fullContent(page,width,height);
+    await sameDesktopComposition(page,width,height);
     const placeholderFits=await page.locator('#character-name').evaluate(input=>{
       const style=getComputedStyle(input),placeholder=getComputedStyle(input,'::placeholder');
       const ctx=document.createElement('canvas').getContext('2d');ctx.font=placeholder.font||style.font;

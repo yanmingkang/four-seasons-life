@@ -26,7 +26,7 @@
 .feedback-panel .result-stats{border:1px solid #d5bd92;background:#f4e6c5;border-radius:3px}
 .bottom-tools .map-controls button{background:#fff1d5;color:#5e4b30}
 .source-button{margin-top:8px}.welcome-fineprint{color:#807058}
-@media(orientation:landscape) and (max-height:650px){
+@container game-stage (orientation:landscape) and (max-height:650px){
   .event-panel{width:min(850px,calc(100% - 16px));padding:14px 20px}
   .event-panel .event-layout{grid-template-columns:minmax(0,1fr) minmax(0,1.18fr);gap:19px}
   .event-panel .options-3{grid-template-columns:1fr;gap:7px}

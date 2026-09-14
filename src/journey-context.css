@@ -15,10 +15,10 @@
 .report-fold{border-top:1px solid #d7dbc6;margin:14px 0;padding-top:12px}.report-fold>summary{font-size:13px;color:#58724b;cursor:pointer}.report-fold .report-takeaways{margin-top:10px}.report-route{font-size:11px}.report-dialog .source-note{font-size:10px}
 .source-book-entry>.tiny-label{display:block;margin-bottom:4px;font-size:9px}.source-book-entry>a{display:block;line-height:1.6;font-weight:600}.source-book-entry>small{display:block;margin-top:4px;color:#738266;font-size:10px}
 .ai-reflection-footnote{font-size:10px!important}.welcome-fineprint{font-size:10px}
-@media(orientation:landscape) and (max-height:650px){
+@container game-stage (orientation:landscape) and (max-height:650px){
  .life-season{top:78px;left:14px;padding:6px 10px;gap:7px}.life-season>span{font-size:22px}.life-season strong{font-size:12px}.life-season small{font-size:8px;max-width:125px}.life-season>div{gap:2px}
  .overlay-open .life-season{display:none}.zhihu-story-bridge{font-size:9px;margin-bottom:6px}.event-background{font-size:10px}
  .zhihu-echo{padding:8px 10px;margin:9px 0}.zhihu-echo p{font-size:11px;margin:5px 0}.feedback-panel .result-copy{font-size:12px}.feedback-panel .result-stats strong{font-size:20px}
  .feedback-panel .result-stats{padding:7px 11px}.settlement-drawer{font-size:10px}.source-book-entry{font-size:11px}
 }
-@media(orientation:portrait){.life-season{display:none}}
+@container game-stage (orientation:portrait){.life-season{display:none}}

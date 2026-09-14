@@ -10,6 +10,7 @@ import { createLiuKanshan, animateLiuKanshan, resetLiuKanshan } from './mascot-3
 import { WorldSignage } from './world-signage.js';
 import { WorldDaylight } from './world-daylight.js';
 import { CharacterContrast } from './character-contrast.js';
+import { bindScaledOrbitInput } from './screen-coordinates.js';
 
 const reduce=()=>Boolean(globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
@@ -64,6 +65,7 @@ export class JourneyWorld {
     this.hemisphere=new THREE.HemisphereLight('#fff8e7','#839984',1.05);this.scene.add(this.hemisphere);
     this.sun=new THREE.DirectionalLight('#ffefd4',2.5);this.sun.position.set(-28,43,21);this.sun.castShadow=true;this.sun.shadow.mapSize.set(2048,2048);Object.assign(this.sun.shadow.camera,{left:-28,right:28,top:28,bottom:-28,near:.5,far:130});this.sun.shadow.normalBias=.035;this.sun.shadow.bias=-.00008;this.scene.add(this.sun);this.scene.add(this.sun.target);
     this.camera=new THREE.PerspectiveCamera(43,1,.08,420);this.controls=new OrbitControls(this.camera,this.renderer.domElement);this.controls.enableDamping=true;this.controls.enablePan=false;this.controls.enableZoom=false;this.controls.minPolarAngle=.25;this.controls.maxPolarAngle=1.3;
+    this.disposeScaledOrbitInput=bindScaledOrbitInput(this.controls);
     this.controls.addEventListener('start',()=>{this.userOrbit=true;this.container.dataset.cameraOrbit='user';});
     this.curve=new THREE.CatmullRomCurve3(WORLD_ROUTE_NODES.map(([x,z])=>groundPoint(x,z)),false,'centripetal');
     this.art=new Scenery(this.scene,this.curve,this.renderer);this.art.terrain();this.art.road();this.createStations();
@@ -365,7 +367,7 @@ export class JourneyWorld {
     this.signage?.update(time);
   }
   dispose(){
-    if(this.isDisposed)return;this.isDisposed=true;this.cancelAnimations();this.renderer.setAnimationLoop(null);this.scene.onBeforeRender=()=>{};this.characterContrast?.dispose();this.dice.dispose();this.art.dispose();this.resizeObserver.disconnect();this.controls.dispose();document.removeEventListener('visibilitychange',this.onVisibility);this.renderer.domElement.removeEventListener('pointerdown',this.onPointerDown);this.renderer.domElement.removeEventListener('pointerup',this.onPointerUp);this.renderer.domElement.removeEventListener('wheel',this.onWheel);
+    if(this.isDisposed)return;this.isDisposed=true;this.cancelAnimations();this.renderer.setAnimationLoop(null);this.scene.onBeforeRender=()=>{};this.characterContrast?.dispose();this.dice.dispose();this.art.dispose();this.resizeObserver.disconnect();this.disposeScaledOrbitInput?.();this.controls.dispose();document.removeEventListener('visibilitychange',this.onVisibility);this.renderer.domElement.removeEventListener('pointerdown',this.onPointerDown);this.renderer.domElement.removeEventListener('pointerup',this.onPointerUp);this.renderer.domElement.removeEventListener('wheel',this.onWheel);
     const geometries=new Set(),materials=new Set(),textures=new Set();
     this.scene.traverse(object=>{if(!object.isMesh&&!object.isLine&&!object.isPoints)return;if(object.geometry)geometries.add(object.geometry);for(const mat of [object.material,object.userData.solid,object.userData.faded].flat().filter(Boolean)){materials.add(mat);for(const value of Object.values(mat))if(value?.isTexture)textures.add(value);}});
     for(const geometry of geometries)geometry.dispose();for(const mat of materials)mat.dispose();for(const texture of textures)texture.dispose();

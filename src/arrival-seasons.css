@@ -18,7 +18,7 @@
   align-items: center;
   justify-content: center;
   gap: 0;
-  padding: max(140px, env(safe-area-inset-top)) 24px max(80px, env(safe-area-inset-bottom));
+  padding: max(140px, var(--stage-safe-top,0px)) 24px max(80px, var(--stage-safe-bottom,0px));
   isolation: isolate;
   overflow: hidden;
   pointer-events: none;
@@ -54,9 +54,9 @@
   z-index: 0;
   left: 50%;
   top: calc(50% + 30px);
-  width: min(470px, 75vw);
+  width: min(470px, 75cqw);
   height: 238px;
-  max-width: 75vw;
+  max-width: 75cqw;
   box-sizing: border-box;
   border: 1px solid var(--arrival-line);
   border-radius: 46% 54% 49% 51% / 52% 43% 57% 48%;
@@ -120,7 +120,7 @@
   position: relative;
   z-index: 1;
   display: block;
-  max-width: min(90vw, 560px);
+  max-width: min(90cqw, 560px);
   margin: 0;
   color: var(--arrival-ink);
   font-family: var(--arrival-title-font);
@@ -165,7 +165,7 @@
   --arrival-title-weight: 600;
 }
 #arrival-transition[data-season="1"] .arrival-shape {
-  width: min(450px, 75vw);
+  width: min(450px, 75cqw);
   height: 225px;
   border-radius: 50%;
   border-color: #dbdc9570;
@@ -372,11 +372,11 @@
 }
 
 /* 844 x 390: keep the complete title stack between y=140 and y=310. */
-@media (max-height: 550px) {
+@container game-stage (max-height: 550px) {
   #arrival-transition.arrival-transition {
     background: radial-gradient(ellipse 310px 140px at 50% calc(50% + 30px), var(--arrival-panel), transparent 84%);
   }
-  #arrival-transition.arrival-transition .arrival-shape { width: min(380px, 75vw); height: 144px; }
+  #arrival-transition.arrival-transition .arrival-shape { width: min(380px, 75cqw); height: 144px; }
   #arrival-transition.arrival-transition .arrival-mark { width: 76px; height: 54px; margin-bottom: 7px; font-size: 32px; }
   #arrival-transition.arrival-transition .arrival-caption { margin-bottom: 5px; font-size: 11px; }
   #arrival-transition.arrival-transition .arrival-title { font-size: 21px; line-height: 1.4; }

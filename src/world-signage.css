@@ -13,7 +13,7 @@
 .scene[data-renderer="webgl"] .world-location{font-family:"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif;color:#354738;background:#fff9eaf5;border-color:#8a795c;text-shadow:none}
 .scene[data-renderer="webgl"] .world-location strong{font-family:inherit;font-weight:600;color:#2b4635}
 .scene[data-renderer="webgl"] .world-location span,.scene[data-renderer="webgl"] .world-location small{color:#4c5b4b}
-@media(orientation:landscape) and (max-height:550px){
+@container game-stage (orientation:landscape) and (max-height:550px){
   .world-signage .world-label{padding:4px 7px;gap:5px}
   .world-signage .world-label b{font-size:19px}
 }

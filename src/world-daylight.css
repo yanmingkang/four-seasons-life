@@ -1,7 +1,7 @@
 .daylight-switch {
   position: absolute;
   top: 76px;
-  right: max(22px, env(safe-area-inset-right));
+  right: max(22px, var(--stage-safe-right,0px));
   z-index: 12;
   display: flex;
   gap: 3px;
@@ -38,9 +38,9 @@
 .experience:is([data-stage="choice"], [data-stage="feedback"]) > .daylight-switch {
   display: none;
 }
-@media (max-height: 650px) and (orientation: landscape) {
-  .daylight-switch { top: 80px; right: max(12px, env(safe-area-inset-right)); padding: 3px; gap: 1px; }
+@container game-stage (max-height: 650px) and (orientation: landscape) {
+  .daylight-switch { top: 80px; right: max(12px, var(--stage-safe-right,0px)); padding: 3px; gap: 1px; }
   .daylight-switch button { min-height: 32px; padding: 5px 10px; gap: 5px; }
 }
-@media (orientation: portrait) { .daylight-switch { visibility: hidden; } }
+@container game-stage (orientation: portrait) { .daylight-switch { visibility: hidden; } }
 @media (prefers-reduced-motion: reduce) { .daylight-switch button { transition: none; } }

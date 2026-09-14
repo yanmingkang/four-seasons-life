@@ -5,6 +5,7 @@ import {RenderPixelatedPass} from 'three/addons/postprocessing/RenderPixelatedPa
 import {OutputPass} from 'three/addons/postprocessing/OutputPass.js';
 import {createCinematicScene3D,resolveCinematicTheme} from './cinematic-scenes-3d.js';
 import {createReferenceDiorama} from './reference-diorama.js';
+import {bindScaledOrbitInput} from './screen-coordinates.js';
 
 // Fit only visible geometry. Hidden original room shells and static-batch
 // anchors should never shrink the authored scene inside its preview frame.
@@ -32,9 +33,9 @@ export function createPixelSceneCamera(scene){
 
 // Lazy, short-lived real 3D vignette. It never moves the board or settles a turn.
 export function mountScenePreview(host,event,{view='scene',captureFrame=null}={}){
-  let renderer,room,camera,controls,composer,pixelPass,outputPass,observer,frame,disposed=false,time=0,last=0,renderedFrames=0;
+  let renderer,room,camera,controls,disposeScaledOrbitInput,composer,pixelPass,outputPass,observer,frame,disposed=false,time=0,last=0,renderedFrames=0;
   for(const key of ['triangles','drawCalls','camera','cameraProjection','zoom','renderer','renderStyle','renderedFrames','populationApplied','addedPeople'])delete host.dataset[key];
-  const cleanup=()=>{if(disposed)return;disposed=true;cancelAnimationFrame(frame);observer?.disconnect();controls?.dispose();pixelPass?.dispose();outputPass?.dispose();composer?.dispose();room?.dispose();renderer?.dispose();renderer?.forceContextLoss();renderer?.domElement.remove();};
+  const cleanup=()=>{if(disposed)return;disposed=true;cancelAnimationFrame(frame);observer?.disconnect();disposeScaledOrbitInput?.();controls?.dispose();pixelPass?.dispose();outputPass?.dispose();composer?.dispose();room?.dispose();renderer?.dispose();renderer?.forceContextLoss();renderer?.domElement.remove();};
   try{
     room=view==='scene'?createCinematicScene3D({theme:resolveCinematicTheme(event),cell:event.number,seed:event.number,cameraMotion:false}):createReferenceDiorama({cell:event.number,season:event.season,character:view==='character'});
     const framing=view==='scene'?createPixelSceneCamera(room.scene):{camera:room.camera,target:room.target};camera=framing.camera;
@@ -52,6 +53,7 @@ export function mountScenePreview(host,event,{view='scene',captureFrame=null}={}
     host.append(renderer.domElement);renderer.domElement.setAttribute('aria-label',`${event.location||event.title}的3D场景`);
     Object.assign(host.dataset,{view,cell:String(event.number),renderer:'webgl',renderStyle:'outlined-pixel-3d',cameraProjection:camera.isOrthographicCamera?'orthographic':'perspective',populationApplied:String(room.scene.userData.populationApplied===true),addedPeople:String(room.scene.userData.addedPeople??0)});
     controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.enablePan=false;controls.minPolarAngle=.2;controls.maxPolarAngle=Math.PI*.48;
+    disposeScaledOrbitInput=bindScaledOrbitInput(controls);
     controls.target.copy(framing.target??new THREE.Vector3(0,1.5,0));
     const distance=camera.position.distanceTo(controls.target);controls.minDistance=distance*.5;controls.maxDistance=distance*1.8;controls.minZoom=.65;controls.maxZoom=2.1;controls.update();
     const reportCamera=()=>{host.dataset.camera=camera.position.toArray().map(v=>v.toFixed(3)).join(',');host.dataset.zoom=camera.zoom.toFixed(3);};controls.addEventListener('change',reportCamera);reportCamera();
