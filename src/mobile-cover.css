@@ -1,11 +1,10 @@
-/* A phone cover is a compact form, not a vertically clipped desktop column.
-   One set of inputs changes grid placement: no duplicated name/talent state. */
+/* Mobile and desktop show the same cover content. Reflow, never remove rules. */
 .talent-picker .talent-brief,#talent-details{display:none}
 .welcome-name-field{min-width:0}
 .talent-info-dialog{width:min(840px,94vw);padding:24px}
 .talent-info-dialog .dialog-close{position:sticky;top:0;float:right;z-index:2}
 .talent-info h2{margin:0 44px 18px 0;font-size:24px}
-.talent-info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;clear:both}
+.talent-info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .talent-info-grid article{padding:16px;background:#eef1df;border:1px solid #c2cda9;border-radius:6px}
 .talent-info-grid h3{font-size:16px;margin:0 0 10px;color:#3b573d}
 .talent-info-grid p{font-size:14px;line-height:1.7;color:#485943}
@@ -13,65 +12,88 @@
 .talent-inheritance-note{font-size:12px;line-height:1.6;margin:14px 0 0}
 
 @media(orientation:landscape) and (max-height:650px){
-  .experience[data-stage="welcome"] .overlay-shell{top:max(48px,var(--game-safe-top));bottom:max(10px,var(--game-safe-bottom))}
-  .welcome-panel{width:min(1040px,100%);padding:14px 20px;display:block}
-  .welcome-panel .welcome-top,.welcome-panel .welcome-fineprint{display:none}
-  .welcome-panel .welcome-layout{display:grid;height:100%;grid-template-columns:minmax(154px,.78fr) minmax(0,1.8fr);grid-template-rows:minmax(0,1fr) 26px 58px;grid-template-areas:"story talents" "story extras" "name action";gap:8px 22px;align-items:stretch}
-  .welcome-panel .welcome-setup,.welcome-panel .welcome-settings-scroll{display:contents}
-  .welcome-panel .welcome-story{grid-area:story;align-self:center;overflow:visible;max-height:none;min-width:0;padding:0 18px 0 0;margin:0}
-  .welcome-panel .welcome-illustration,.welcome-panel .welcome-kicker,.welcome-panel .starter-resources{display:none}
-  .welcome-panel h1{font-size:clamp(23px,3.1vw,31px);line-height:1.4;letter-spacing:2px;margin:0 0 10px}
-  .welcome-panel .intro-copy{font-size:12px;line-height:1.7;text-wrap:balance}
-  .welcome-panel .welcome-name-field{grid-area:name;align-self:end;padding-right:18px;text-align:left}
-  .welcome-panel .name-label{font-size:12px;line-height:16px;margin:0 0 4px}
-  .welcome-panel #character-name{min-height:38px;height:38px;padding:6px 9px;font-size:16px;line-height:1.4}
+  .experience[data-stage="welcome"] .overlay-shell{inset:max(52px,calc(47px + var(--game-safe-top))) max(8px,var(--game-safe-right)) max(34px,calc(30px + var(--game-safe-bottom))) max(8px,var(--game-safe-left))}
+  .welcome-panel{width:min(1200px,100%);height:100%;padding:9px 14px;display:flex;flex-direction:column;overflow:hidden}
+  .welcome-panel .welcome-top{display:flex;flex:none;min-height:18px;margin:0 0 5px;gap:8px}
+  .welcome-panel .welcome-top .tiny-label{font-size:8px;letter-spacing:.7px}
+  .welcome-panel .edition{font-size:8px;padding:1px 4px}
+  .welcome-panel .welcome-top .zhihu-account{font-size:9px;line-height:1.3;gap:4px;margin:0 auto 0 8px;flex-wrap:nowrap}
+  .welcome-panel .welcome-top .zhihu-account .zhihu-account-name{max-width:190px}
+  .welcome-panel .welcome-top .zhihu-account .zhihu-account-button{min-height:18px;min-width:28px;padding:0 3px}
+  .welcome-panel .welcome-layout{display:grid;flex:1;min-height:0;grid-template-columns:minmax(135px,.7fr) minmax(0,2.3fr);grid-template-rows:minmax(0,1fr);gap:14px;align-items:stretch}
+  .welcome-panel .welcome-story{display:flex;flex-direction:column;justify-content:center;align-self:stretch;min-width:0;max-height:none;overflow:visible;padding:0 12px 14px 0;margin:0}
+  .welcome-panel .welcome-illustration{display:grid;grid-template-rows:minmax(0,1fr) 16px;justify-items:center;align-items:center;height:90px;flex:none;margin:0 0 4px}
+  .welcome-panel .welcome-illustration img{grid-row:1;width:80px;height:80px}
+  .welcome-panel .welcome-orbit{width:58px;height:58px;top:2px}
+  .welcome-panel .welcome-illustration i{position:static;grid-row:2;font-size:8px;line-height:12px;padding:1px 5px;transform:rotate(2deg);z-index:2}
+  .welcome-panel .welcome-kicker{display:block;font-size:9px;line-height:1.3;margin:3px 0;letter-spacing:0}
+  .welcome-panel h1{font-size:clamp(18px,2.6vw,28px);line-height:1.35;letter-spacing:1px;margin:4px 0 5px}
+  .welcome-panel .intro-copy{font-size:10px;line-height:1.45;text-wrap:balance;margin:0}
+  .welcome-panel .starter-resources{display:flex;flex:none;gap:10px;padding:2px 0;margin:8px 0 0}
+  .welcome-panel .starter-resources>span{gap:3px}
+  .welcome-panel .starter-resources b{font-size:12px}
+  .welcome-panel .starter-resources .resource-art{width:18px;height:18px}
+  .welcome-panel .welcome-setup{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);grid-template-rows:28px minmax(0,1fr) 38px;grid-template-areas:"name name" "talents talents" "extras action";gap:5px 9px;overflow:visible;min-height:0}
+  .welcome-panel .welcome-settings-scroll{display:contents}
+  .welcome-panel .welcome-name-field{grid-area:name;display:flex;align-items:center;gap:9px;text-align:left}
+  .welcome-panel .name-label{font-size:10px;line-height:1.3;margin:0;white-space:nowrap;flex:none}
+  .welcome-panel #character-name{min-height:28px;height:28px;padding:3px 8px;font-size:16px;line-height:1.25;min-width:0;flex:1}
   .welcome-panel .talent-picker{grid-area:talents;align-self:center;min-width:0;min-height:0;margin:0;padding:0;overflow:visible}
-  .welcome-panel .talent-picker legend{font-size:13px;line-height:18px;margin:0 0 9px;padding:0}
-  .welcome-panel .talent-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
-  .welcome-panel .talent-picker label{display:flex;align-items:flex-start;justify-content:center;min-height:90px;margin:0;padding:12px 9px;gap:7px;border:1px solid #c4cbb2;border-radius:7px;background:#fbf8ec;box-shadow:none}
-  .welcome-panel .talent-picker label:has(input:checked){background:#e4edcb;border-color:#78985e;box-shadow:inset 0 0 0 1px #78985e}
-  .welcome-panel .talent-picker input{width:15px;height:15px;flex:none;margin:3px 0 0}
-  .welcome-panel .talent-picker b{font-size:14px;line-height:20px;white-space:nowrap}
-  .welcome-panel .talent-picker .talent-brief{display:block;font-size:12px;line-height:1.6;margin-top:6px;color:#647153}
-  .welcome-panel .talent-picker :is(.talent-effect,.talent-note){display:none}
-  .welcome-panel .welcome-extras{grid-area:extras;display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0}
-  #talent-details{display:block;flex:none;margin-left:auto;min-height:26px;padding:3px 0 3px 8px;background:transparent;color:#536a42;border:0;box-shadow:none;font-size:12px;line-height:20px;white-space:nowrap;text-decoration:underline;text-underline-offset:3px}
-  .welcome-panel .life-inheritance{margin:0;min-width:0;gap:6px;align-items:center;font-size:12px;line-height:18px}
-  .welcome-panel .life-inheritance small{display:none}
-  .welcome-panel .life-inheritance input{flex:none;margin:0;width:15px;height:15px}
-  .welcome-panel .welcome-actions{grid-area:action;margin:0;padding:0;align-self:end}
-  .welcome-panel .welcome-actions .primary{min-height:48px;padding:6px 10px;font-size:16px;line-height:1.4}
-  .welcome-panel .welcome-actions .primary small{font-size:11px;line-height:16px}
-  .talent-info-dialog{padding:16px 20px}.talent-info h2{font-size:20px;margin-bottom:12px}
-  .talent-info-grid article{padding:12px}.talent-info-grid h3{font-size:14px}.talent-info-grid p{font-size:13px}
+  .welcome-panel .talent-picker legend{font-size:10px;line-height:13px;margin:0 0 4px;padding:0}
+  .welcome-panel .talent-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .welcome-panel .talent-picker label{display:grid;grid-template-columns:13px minmax(0,1fr);align-content:start;align-items:start;gap:3px 5px;min-height:0;padding:8px;margin:0;border:1px solid #c4cbb2;border-radius:4px;background:#fbf8ec;box-shadow:none}
+  .welcome-panel .talent-picker label:has(input:checked){background:#e4edcb;border-color:#78985e;box-shadow:inset 2px 0 #78985e}
+  .welcome-panel .talent-picker label>span{display:contents}
+  .welcome-panel .talent-picker input{width:13px;height:13px;margin:1px 0 0;grid-row:1;grid-column:1;flex:none}
+  .welcome-panel .talent-picker b{display:block;grid-row:1;grid-column:2;font-size:12px;line-height:16px;white-space:nowrap}
+  .welcome-panel .talent-picker :is(.talent-effect,.talent-note){display:block;grid-column:1/-1;font-size:11px;line-height:1.45;margin:0;color:#526044;overflow:visible;white-space:normal;-webkit-line-clamp:unset}
+  .welcome-panel .talent-picker .talent-note{color:#6b7159}
+  .welcome-panel .talent-picker .talent-brief{display:none}
+  .welcome-panel .welcome-extras{grid-area:extras;display:flex;align-items:center;min-width:0;visibility:visible}
+  .welcome-panel .life-inheritance{display:flex;margin:0;min-width:0;gap:5px;align-items:center;font-size:10px;line-height:1.25;text-align:left}
+  .welcome-panel .life-inheritance span{gap:1px}
+  .welcome-panel .life-inheritance small{display:block;font-size:9px;line-height:1.3;color:#6b7159}
+  .welcome-panel .life-inheritance input{flex:none;margin:0;width:13px;height:13px}
+  .welcome-panel .welcome-actions{grid-area:action;display:flex;align-items:stretch;margin:0;padding:0;min-width:0}
+  .welcome-panel .welcome-actions .primary{width:100%;min-height:34px;padding:3px 6px;font-size:13px;line-height:1.3;letter-spacing:0}
+  .welcome-panel .welcome-actions .primary small{font-size:9px;line-height:12px;letter-spacing:0}
+  .welcome-panel .welcome-fineprint{position:absolute;bottom:6px;left:14px;width:calc((100% - 42px)*.2333 - 12px);display:block;font-size:8px;line-height:12px;margin:0;text-align:center}
 }
 
 @media(orientation:landscape) and (max-height:350px){
-  .welcome-panel{padding:10px 16px}
-  .welcome-panel .welcome-layout{gap:6px 18px;grid-template-rows:minmax(0,1fr) 26px 56px}
-  .welcome-panel h1{font-size:23px;line-height:1.35;margin-bottom:8px}
-  .welcome-panel .talent-picker label{min-height:76px;padding:8px}
-  .welcome-panel .talent-picker legend{margin-bottom:6px}
+  .welcome-panel{padding:4px 10px}
+  .welcome-panel .welcome-top{margin-bottom:2px;min-height:16px}
+  .welcome-panel .welcome-top .tiny-label{font-size:7px}
+  .welcome-panel .welcome-layout{gap:9px;grid-template-columns:minmax(132px,.7fr) minmax(0,2.3fr)}
+  .welcome-panel .welcome-story{padding-right:8px;padding-bottom:12px;justify-content:flex-start}
+  .welcome-panel .welcome-illustration{height:56px;grid-template-rows:44px 12px;margin:0 0 1px}
+  .welcome-panel .welcome-illustration img{width:44px;height:44px}
+  .welcome-panel .welcome-orbit{width:36px;height:36px;top:0}
+  .welcome-panel .welcome-illustration i{font-size:7px;line-height:10px;padding:0 3px}
+  .welcome-panel .welcome-kicker{font-size:8px;line-height:10px;margin:1px 0}
+  .welcome-panel h1{font-size:17px;line-height:1.25;margin:2px 0 3px;letter-spacing:0}
+  .welcome-panel .intro-copy{font-size:8.5px;line-height:1.4}
+  .welcome-panel .starter-resources{margin:3px 0 0;padding:0;gap:8px;line-height:1}
+  .welcome-panel .starter-resources b{font-size:11px}
+  .welcome-panel .starter-resources .resource-art{width:15px;height:15px}
+  .welcome-panel .welcome-setup{grid-template-rows:24px minmax(0,1fr) 32px;gap:3px 7px}
+  .welcome-panel #character-name{min-height:24px;height:24px;padding:1px 6px}
+  .welcome-panel .talent-picker legend{font-size:9px;line-height:11px;margin-bottom:3px}
+  .welcome-panel .talent-options{gap:5px}
+  .welcome-panel .talent-picker label{padding:5px;gap:2px 4px}
+  .welcome-panel .talent-picker b{font-size:11px;line-height:13px}
+  .welcome-panel .talent-picker :is(.talent-effect,.talent-note){font-size:10px;line-height:1.3}
+  .welcome-panel .welcome-actions .primary{min-height:30px;font-size:12px;padding:2px 5px}
+  .welcome-panel .welcome-actions .primary small{font-size:8px;line-height:10px}
+  .welcome-panel .welcome-fineprint{font-size:8px;line-height:10px;bottom:3px;left:10px;width:calc((100% - 33px)*.2333 - 8px)}
 }
 
-@media(orientation:landscape) and (max-width:740px){
-  .welcome-panel .welcome-layout{grid-template-columns:minmax(144px,.72fr) minmax(0,1.8fr);column-gap:14px}
-  .welcome-panel h1{font-size:20px;letter-spacing:1px}
-  .welcome-panel .welcome-story,.welcome-panel .welcome-name-field{padding-right:10px}
-  .welcome-panel .talent-options{gap:6px}
-  .welcome-panel .talent-picker label{padding:8px 6px;gap:5px}
-  .welcome-panel .talent-picker b{font-size:13px}
-  .welcome-panel .talent-picker .talent-brief{font-size:11px}
-  .welcome-panel .life-inheritance{font-size:11px}
-}
-
-/* Keyboard-only extra-short area: retain input and all radio controls.
-   Long explanations are available again as soon as the keyboard closes. */
+/* Keyboard-only height: retain all content, allowing temporary scroll rather
+   than removing it. Normal landscape remains a complete, unscrolled form. */
 @container game-viewport (max-height:260px){
-  .experience[data-stage="welcome"] .overlay-shell{top:max(8px,var(--game-safe-top));bottom:max(8px,var(--game-safe-bottom))}
-  .welcome-panel .welcome-layout{grid-template-rows:minmax(0,1fr) 0px 54px;row-gap:5px}
-  .welcome-panel .welcome-extras{visibility:hidden}
-  .welcome-panel .talent-picker label{min-height:52px;padding:8px 6px}
-  .welcome-panel .talent-picker .talent-brief{display:none}
-  .welcome-panel h1{font-size:22px}
+  .experience[data-stage="welcome"] .overlay-shell{top:max(52px,calc(47px + var(--game-safe-top)));bottom:max(34px,calc(30px + var(--game-safe-bottom)))}
+  .welcome-panel{overflow-y:auto}
+  .welcome-panel .welcome-top{display:flex}
+  .welcome-panel .welcome-layout{flex:none;min-height:160px}
+  .welcome-panel .welcome-actions{position:sticky;bottom:0;z-index:3;background:#fff5dc}
 }

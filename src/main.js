@@ -21,6 +21,7 @@ import './arrival-seasons.css';
 import './zhihu-auth.css';
 import './mobile-layout.css';
 import './mobile-cover.css';
+import './mobile-full-chrome.css';
 import {mountMobileViewport} from './mobile-viewport.js';
 import {createZhihuAuthUI,saveZhihuLoginDraft,restoreZhihuLoginDraft} from './zhihu-auth-ui.js';
 import {mountSharePreview} from './share-preview.js';

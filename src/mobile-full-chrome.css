@@ -1,0 +1,70 @@
+/* The phone cover carries the same information and controls as the desktop
+   cover. Compact only its spacing and sizes; never turn desktop content into
+   an absent/mobile-only alternative. Existing stage/hidden attributes still
+   own companion, inventory, travel, season and daylight visibility. */
+@media (orientation:landscape) and (max-height:650px){
+  .experience[data-stage="welcome"]{
+    --cover-chrome-left:max(8px,var(--game-safe-left));
+    --cover-chrome-right:max(8px,var(--game-safe-right));
+  }
+  .experience[data-stage="welcome"]>.topbar{
+    display:flex;visibility:visible;top:max(5px,var(--game-safe-top));
+    left:var(--cover-chrome-left);right:var(--cover-chrome-right);height:41px;
+    align-items:center;
+  }
+  .experience[data-stage="welcome"] .brand{gap:4px;flex:none}
+  .experience[data-stage="welcome"] .brand-mark{width:25px;height:29px;font-size:21px;border-width:1px;flex:none}
+  .experience[data-stage="welcome"] .brand>span:last-child{display:block;font-size:14px;line-height:1.4;letter-spacing:1px}
+  .experience[data-stage="welcome"] .brand small{display:block;font-size:5px;line-height:1.5;letter-spacing:0;margin-top:3px;white-space:nowrap}
+  .experience[data-stage="welcome"] .topbar nav{gap:4px;flex:none}
+  .experience[data-stage="welcome"] .topbar nav .nav-button:not([hidden]){display:inline-flex;width:auto;height:29px;padding:0 5px;font-size:9px;gap:3px;border-width:1px}
+  .experience[data-stage="welcome"] .topbar nav .nav-button>span{display:inline;font-size:9px;white-space:nowrap}
+  .experience[data-stage="welcome"] .topbar nav .nav-button svg{width:12px;height:12px}
+  .experience[data-stage="welcome"] .topbar nav .icon-button{width:27px;height:29px;border-width:1px}
+  .experience[data-stage="welcome"] .topbar nav .icon-button svg{width:15px;height:15px}
+
+  .experience[data-stage="welcome"]>.status-strip{
+    display:flex;visibility:visible;align-items:center;justify-content:space-between;
+    top:max(5px,var(--game-safe-top));left:calc(var(--cover-chrome-left) + 98px);
+    right:calc(var(--cover-chrome-right) + 128px);width:auto;min-width:0;max-width:none;
+    height:41px;min-height:0;transform:none;gap:5px;padding:3px 7px 5px;
+    border-width:1px;border-radius:3px;overflow:visible;
+  }
+  .experience[data-stage="welcome"] .status-strip .player-badge{display:flex;align-items:center;gap:3px;padding-right:5px;flex:none}
+  .experience[data-stage="welcome"] .status-strip .player-badge img{display:block;width:24px;height:27px;border-radius:4px}
+  .experience[data-stage="welcome"] .status-strip .player-badge b{display:block;font-size:9px;line-height:1.4;max-width:48px}
+  .experience[data-stage="welcome"] .status-strip .player-badge small{display:block;font-size:7px;line-height:1.5}
+  .experience[data-stage="welcome"] .status-strip .resource{display:flex;flex:none;gap:3px}
+  .experience[data-stage="welcome"] .status-strip .resource>div{display:flex;flex-direction:column;justify-content:center;line-height:1}
+  .experience[data-stage="welcome"] .status-strip .resource-icon{display:grid!important;width:20px;height:23px;flex:none}
+  .experience[data-stage="welcome"] .status-strip .resource-icon .resource-art{display:block;width:20px;height:20px}
+  .experience[data-stage="welcome"] .status-strip .eyebrow{display:block;font-size:7px;line-height:1.2;letter-spacing:0}
+  .experience[data-stage="welcome"] .status-strip .resource strong{display:block;font-size:16px;line-height:1.05;letter-spacing:-.5px}
+  .experience[data-stage="welcome"] .status-strip .resource i{font-size:8px;letter-spacing:0}
+  .experience[data-stage="welcome"] .status-strip .mood-track{display:block;width:48px;height:3px;margin-top:2px}
+  .experience[data-stage="welcome"] .status-strip #exp-stars{display:block!important;font-size:6px;line-height:1;letter-spacing:1px}
+  .experience[data-stage="welcome"] .status-strip .journey-resource{display:flex;flex-direction:column;flex:none;padding-left:5px;border-left-width:1px;line-height:1}
+  .experience[data-stage="welcome"] .status-strip .journey-resource strong{display:block;font-size:11px;line-height:1.2}
+  .experience[data-stage="welcome"] .status-strip .journey-resource i{font-size:8px}
+  .experience[data-stage="welcome"] .status-strip .journey-resource>small{display:block;font-size:7px;line-height:1.4;white-space:nowrap}
+  .experience[data-stage="welcome"] .status-strip .season-progress{display:grid;flex:none;grid-template-columns:repeat(2,12px);gap:2px}
+  .experience[data-stage="welcome"] .status-strip .season-step{display:grid;width:12px;height:13px;font-size:9px;line-height:1;border-width:1px}
+  .experience[data-stage="welcome"] .status-strip .route-track{height:3px;border-top-width:1px}
+
+  .experience[data-stage="welcome"]>.bottom-tools{
+    display:flex;visibility:visible;left:var(--cover-chrome-left);right:var(--cover-chrome-right);
+    bottom:max(4px,var(--game-safe-bottom));height:26px;align-items:center;gap:12px;
+  }
+  .experience[data-stage="welcome"] .bottom-tools .map-controls{display:flex;gap:3px;align-items:center;flex:none}
+  .experience[data-stage="welcome"] .bottom-tools .map-controls .view-mode-button{display:inline-flex;align-items:center;justify-content:center;font-size:9px;line-height:1;height:25px;min-height:0;padding:4px 6px;white-space:nowrap;border-width:1px}
+  .experience[data-stage="welcome"] .bottom-tools .map-controls .icon-button{display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;min-height:0;border-width:1px;font-size:17px}
+  .experience[data-stage="welcome"] .bottom-tools .map-controls .icon-button svg{width:13px;height:13px}
+  .experience[data-stage="welcome"] .bottom-tools .journey-settings{display:flex;align-items:center;gap:10px;flex:none}
+  .experience[data-stage="welcome"] .bottom-tools .auto-setting{display:flex;align-items:center;font-size:9px;line-height:1.3;gap:5px;white-space:nowrap}
+  .experience[data-stage="welcome"] .bottom-tools .toggle-track{width:23px;height:15px;flex:none}
+  .experience[data-stage="welcome"] .bottom-tools .toggle-track:before{width:9px;height:9px;top:2px;left:2px}
+  .experience[data-stage="welcome"] .bottom-tools .auto-setting input:checked+.toggle-track:before{transform:translateX(8px)}
+  .experience[data-stage="welcome"] .bottom-tools #all-sources{display:inline-flex;align-items:center;gap:3px;font-size:9px;line-height:1.3;min-height:25px;white-space:nowrap;padding:3px 0}
+  .experience[data-stage="welcome"] .bottom-tools #all-sources svg{width:10px;height:10px}
+  .experience[data-stage="welcome"] .bottom-tools #save-status:not(:empty){display:block;font-size:7px;max-width:95px;line-height:1.3}
+}

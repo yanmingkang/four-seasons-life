@@ -13,7 +13,7 @@ import {claimLegacy,LEGACY_KEY} from '../src/life-legacy.js';
 const {chromium}=createRequire(import.meta.url)(process.env.PLAYWRIGHT_PATH||'C:/Users/25293/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
 const root=fileURLToPath(new URL('../',import.meta.url));
 const out=fileURLToPath(new URL('../test-results/mobile-cover/',import.meta.url));
-const viewports=[[667,280],[812,280],[844,300],[844,390],[915,412],[1280,800]];
+const viewports=[[667,280],[812,280],[844,300],[844,390],[915,412],[1280,800],[1904,942]];
 const talents=['defense','ambitious','optimistic'];
 const effects=[
   '开局带【留痕备忘录】，首次甩锅抵挡事件本身的消耗。',
@@ -25,16 +25,20 @@ const effects=[
 ];
 const titleNames=['稳健防守型','锐意进取型','乐天知命型'];
 const accountName='手机封面验收的知乎账户用户名特别长不能挤掉心态选择';
-const nickname='旅人昵称需要在弹窗关闭后保持不变'.slice(0,16);
+const nickname='旅人昵称需要在切换布局后保持不变'.slice(0,16);
 const labelFor=value=>`.talent-picker label:has(input[value="${value}"])`;
 const coreSelectors=[...talents.map(labelFor),'#character-name','#start-full'];
+const toolbarControls=['.brand','#journal-button','#rules-button','#sound-button','#view-follow','#view-overview','#zoom-out','#reset-view','#zoom-in','#town-gallery','.auto-setting','#all-sources'];
+const pictureSelectors=['.welcome-illustration','.welcome-illustration img','.welcome-orbit','.player-badge img','.money-resource .resource-icon','.mood-resource .resource-icon','.exp-resource .resource-icon','.mood-track','#season-progress'];
+const copySelectors=['.welcome-illustration i','.welcome-kicker','.welcome-panel h1','.welcome-panel .intro-copy','.starter-resources','.welcome-top .tiny-label','.welcome-fineprint','.welcome-name-field>label','.talent-picker legend','.brand>span:last-child','.brand small','#player-name','#player-tier','.money-resource .eyebrow','#money-value','.mood-resource .eyebrow','#mood-value','#mood-max','.exp-resource .eyebrow','#exp-value','#exp-stars','.journey-resource .eyebrow','#route-value','.journey-resource>small','#season-progress','#journal-button>span','#rules-button>span','.auto-setting>span:last-child','#all-sources'];
 const report={passed:false,phase:'prepare',startedAt:new Date().toISOString(),cases:[],screenshots:[],errors:[],apiIntercepted:[],externalBlocked:[],realApiCalls:0,
   method:{server:'Ephemeral local Vite; actual WebGL renderer',browser:'Chrome desktop and touch landscape viewports; not a physical iPhone or WeChat run',
     network:'All /api/ requests intercepted; auth/status mocked with exact local callback; all external HTTP requests blocked',
     fixtures:'Engine-replay-valid ongoing save and separately claimed completed-memory legacy',
-    visibility:'All three cards, nickname and start button checked together before any pointer, focus, check or scrolling operation; full ancestor intersection plus nine hit-test points',
+    visibility:'All desktop cover content, full rules, HUD and toolbars must be visible on mobile before any pointer, focus, check or scrolling operation; interactive controls use nine hit-test points, text uses complete Range line rectangles and ancestor intersection',
+    desktopReference:'1904x942 matches the supplied full desktop screenshot and requires the same full content as all phones; 1280x800 retains its existing desktop icon-only journal/rules toolbar while full cover rules, images and storage still undergo the same checks',
     selection:'Coordinate clicks cannot invoke Playwright automatic scrolling; all welcome ancestor scroll offsets compared after each choice',
-    persistence:'Nickname, talent, inheritance toggle and raw journey/legacy storage compared before and after details-dialog closure',
+    persistence:'Nickname, talent, inheritance toggle and raw journey/legacy storage compared after direct choices and throughout viewport resizing; no rules are hidden behind a details dialog',
     resize:'Two same-context mobile sequences, anonymous and authenticated with legal saves: 844x300 -> 667x280 -> 844x390 -> portrait 390x844 -> 844x390 -> 667x280 -> 844x300; scale/layout sampled at 300ms and 1300ms'}};
 let vite,browser,page,base;
 
@@ -59,8 +63,8 @@ async function settle(){
   });
 }
 
-async function geometry(selectors,stage,row){
-  const result=await page.evaluate(selectors=>{
+async function geometry(selectors,stage,row,{hitTest=true}={}){
+  const result=await page.evaluate(({selectors,hitTest})=>{
     const vv=visualViewport,style=getComputedStyle(document.documentElement);
     const safe=side=>parseFloat(style.getPropertyValue('--game-safe-'+side))||0;
     const viewport={left:(vv?.offsetLeft||0)+safe('left'),top:(vv?.offsetTop||0)+safe('top'),
@@ -92,7 +96,7 @@ async function geometry(selectors,stage,row){
       // The full unrounded box is still independently checked against all clips.
       const insetX=Math.min(rect.width/4,Math.max(2,radius/2+1)),insetY=Math.min(rect.height/4,Math.max(2,radius/2+1));
       const points=[];
-      for(const [yName,y]of [['top',rect.top+insetY],['middle',rect.top+rect.height/2],['bottom',rect.bottom-insetY]]){
+      if(hitTest)for(const [yName,y]of [['top',rect.top+insetY],['middle',rect.top+rect.height/2],['bottom',rect.bottom-insetY]]){
         for(const [xName,x]of [['left',rect.left+insetX],['center',rect.left+rect.width/2],['right',rect.right-insetX]]){
           const hit=document.elementFromPoint(x,y);points.push({position:`${yName}-${xName}`,x,y,hit:summary(hit),uncovered:hit===node||node.contains(hit)});
         }
@@ -100,7 +104,7 @@ async function geometry(selectors,stage,row){
       const intersectionArea=Math.max(0,Math.min(rect.right,intersection.right)-Math.max(rect.left,intersection.left))*Math.max(0,Math.min(rect.bottom,intersection.bottom)-Math.max(rect.top,intersection.top));
       return {selector,rect:rect.toJSON(),viewport,intersection,intersectionRatio:rect.width&&rect.height?intersectionArea/(rect.width*rect.height):0,rendered,within,fullyIntersecting,clips,points};
     });
-  },selectors);
+  },{selectors,hitTest});
   row.geometry.push({stage,controls:result});
   for(const item of result){
     assert.equal(item.missing,undefined,`${row.id} ${stage}: ${item.selector} exists`);
@@ -110,6 +114,82 @@ async function geometry(selectors,stage,row){
     assert.ok(item.points.every(point=>point.uncovered),`${row.id} ${stage}: ${item.selector} has no center/edge/corner obstruction (${JSON.stringify(item.points.filter(point=>!point.uncovered))})`);
   }
   return result;
+}
+
+async function fullCopy(selectors,stage,row,{minFont=0}={}){
+  const result=await page.evaluate(({selectors,minFont})=>{
+    const vv=visualViewport,rootStyle=getComputedStyle(document.documentElement);
+    const safe=side=>parseFloat(rootStyle.getPropertyValue('--game-safe-'+side))||0;
+    const viewport={left:(vv?.offsetLeft||0)+safe('left'),top:(vv?.offsetTop||0)+safe('top'),right:(vv?.offsetLeft||0)+(vv?.width||innerWidth)-safe('right'),bottom:(vv?.offsetTop||0)+(vv?.height||innerHeight)-safe('bottom')};
+    return selectors.map(selector=>{
+      const node=document.querySelector(selector);if(!node)return {selector,missing:true};
+      const walker=document.createTreeWalker(node,NodeFilter.SHOW_TEXT),lines=[];let text;
+      while(text=walker.nextNode()){
+        if(!text.textContent.trim())continue;
+        const owner=text.parentElement,css=getComputedStyle(owner),intersection={...viewport},clamps=[];
+        let rendered=owner.getClientRects().length>0&&css.display!=='none'&&css.visibility!=='hidden';
+        for(let ancestor=owner;ancestor;ancestor=ancestor.parentElement){
+          const acss=getComputedStyle(ancestor),ar=ancestor.getBoundingClientRect();
+          rendered=rendered&&acss.display!=='none'&&acss.visibility!=='hidden'&&Number(acss.opacity)>0;
+          if(acss.webkitLineClamp!=='none'&&parseFloat(acss.webkitLineClamp)>0)clamps.push(acss.webkitLineClamp);
+          if(acss.display==='contents')continue;
+          const sx=ancestor.offsetWidth?ar.width/ancestor.offsetWidth:1,sy=ancestor.offsetHeight?ar.height/ancestor.offsetHeight:1;
+          const bounds={left:ar.left+ancestor.clientLeft*sx,top:ar.top+ancestor.clientTop*sy,right:ar.left+(ancestor.clientLeft+ancestor.clientWidth)*sx,bottom:ar.top+(ancestor.clientTop+ancestor.clientHeight)*sy};
+          if(/^(auto|scroll|hidden|clip)$/.test(acss.overflowX)){intersection.left=Math.max(intersection.left,bounds.left);intersection.right=Math.min(intersection.right,bounds.right);}
+          if(/^(auto|scroll|hidden|clip)$/.test(acss.overflowY)){intersection.top=Math.max(intersection.top,bounds.top);intersection.bottom=Math.min(intersection.bottom,bounds.bottom);}
+        }
+        const range=document.createRange();range.selectNodeContents(text);
+        const rects=[...range.getClientRects()].filter(rect=>rect.width>0&&rect.height>0).map(rect=>rect.toJSON());
+        lines.push({text:text.textContent,font:parseFloat(css.fontSize),rendered,clamps,rects,intersection,unclipped:rects.length>0&&rects.every(rect=>rect.left>=intersection.left-1&&rect.top>=intersection.top-1&&rect.right<=intersection.right+1&&rect.bottom<=intersection.bottom+1)});
+      }
+      return {selector,minFont,lines};
+    });
+  },{selectors,minFont});
+  row.copyGeometry??=[];row.copyGeometry.push({stage,result});
+  for(const item of result){
+    assert.equal(item.missing,undefined,`${row.id} ${stage}: ${item.selector} exists`);
+    assert.ok(item.lines.length,`${row.id} ${stage}: ${item.selector} contains actual text`);
+    for(const line of item.lines){
+      assert.ok(line.rendered,`${row.id} ${stage}: ${item.selector} text is directly rendered: ${line.text}`);
+      assert.equal(line.clamps.length,0,`${row.id} ${stage}: ${item.selector} does not use line clamping`);
+      assert.ok(line.font>=minFont,`${row.id} ${stage}: ${item.selector} font ${line.font}px >= ${minFont}px`);
+      assert.ok(line.unclipped,`${row.id} ${stage}: ${item.selector} complete text fits visible ancestor bounds: ${JSON.stringify(line)}`);
+    }
+  }
+}
+
+async function completeCover(stage,row){
+  await geometry(toolbarControls,stage+'-toolbar',row);
+  await geometry(['.welcome-top',...pictureSelectors],stage+'-pictures',row,{hitTest:false});
+  const narrowDesktop=!row.mobile&&row.width===1280;
+  const requiredCopy=narrowDesktop?copySelectors.filter(selector=>!['#journal-button>span','#rules-button>span'].includes(selector)):copySelectors;
+  await fullCopy([...requiredCopy,'#start-full',...talents.map(talent=>`${labelFor(talent)} b`)],stage+'-desktop-content',row);
+  if(narrowDesktop){
+    assert.equal(await page.locator('#journal-button>span').isVisible(),false,'Existing 1280px desktop layout keeps journal as an icon');
+    assert.equal(await page.locator('#rules-button>span').isVisible(),false,'Existing 1280px desktop layout keeps rules as an icon');
+  }
+  // Authenticated desktop already replaces the edition badge with the account
+  // name/logout. Match the same state on mobile, rather than requiring both.
+  if(row.authenticated){
+    await geometry(['.welcome-account-slot .zhihu-account-name','.welcome-account-slot .zhihu-account-button'],stage+'-signed-in-account',row);
+    await fullCopy(['.welcome-account-slot .zhihu-account-button'],stage+'-signed-in-action',row);
+  }else await fullCopy(['.welcome-top .edition'],stage+'-edition-badge',row);
+  const rules=talents.flatMap(talent=>[`${labelFor(talent)} .talent-effect`,`${labelFor(talent)} .talent-note`]);
+  await fullCopy(rules,stage+'-complete-rules',row,{minFont:row.mobile?9.5:0});
+  assert.equal(await page.locator('.talent-effect:visible').count(),3,'All full effects appear directly in the cover');
+  assert.equal(await page.locator('.talent-note:visible').count(),3,'All full notes appear directly in the cover');
+  assert.equal(await page.locator('.talent-brief:visible').count(),0,'Concise substitutes do not replace original rule text');
+  assert.equal(await page.locator('#talent-details').isVisible(),false,'Full cover content is not moved behind a details entry');
+  const text=await page.locator('.talent-picker').innerText();
+  for(const name of titleNames)assert.ok(text.includes(name),`Direct cover includes ${name}`);
+  for(const effect of effects)assert.ok(text.includes(effect),`Direct cover retains complete rule: ${effect}`);
+  for(const selector of ['.welcome-illustration img','.player-badge img']){
+    assert.ok(await page.locator(selector).evaluate(img=>img.complete&&img.naturalWidth>0),`${selector} image actually loaded`);
+  }
+  if(row.legacy){
+    await geometry(['.life-inheritance'],stage+'-inheritance',row);
+    await fullCopy(['.life-inheritance'],stage+'-inheritance-full-text',row);
+  }
 }
 
 async function scrollOffsets(){
@@ -133,13 +213,17 @@ async function clickPoint(selector){
   await page.mouse.click(point.x,point.y);
 }
 
-async function openCover({width,height,authenticated,legacy,mobile,id}){
+async function openCover({width,height,authenticated,legacy,mobile,id,safeInsets=null}){
   const context=await browser.newContext({viewport:{width,height},isMobile:mobile,hasTouch:mobile,deviceScaleFactor:1,reducedMotion:'reduce',serviceWorkers:'block'});
-  await context.addInitScript(({journeyKey,legacyKey,journeyRaw,legacyRaw})=>{
+  await context.addInitScript(({journeyKey,legacyKey,journeyRaw,legacyRaw,safeInsets})=>{
     localStorage.setItem('four-seasons-auto-depart','off');localStorage.setItem('four-seasons-music','off');
     if(journeyRaw!==null)localStorage.setItem(journeyKey,journeyRaw);
     if(legacyRaw!==null)localStorage.setItem(legacyKey,legacyRaw);
-  },{journeyKey:JOURNEY_STORAGE_KEY,legacyKey:LEGACY_KEY,journeyRaw:legacy?savedFixture.journeyRaw:null,legacyRaw:legacy?savedFixture.legacyRaw:null});
+    if(safeInsets){
+      const applySafeInsets=()=>{for(const [side,value]of Object.entries(safeInsets))document.documentElement.style.setProperty('--game-safe-'+side,value+'px');};
+      if(document.documentElement)applySafeInsets();else document.addEventListener('DOMContentLoaded',applySafeInsets,{once:true});
+    }
+  },{journeyKey:JOURNEY_STORAGE_KEY,legacyKey:LEGACY_KEY,journeyRaw:legacy?savedFixture.journeyRaw:null,legacyRaw:legacy?savedFixture.legacyRaw:null,safeInsets});
   await context.route('**/*',route=>{
     const url=new URL(route.request().url());
     if(url.origin!==base&&!['blob:','data:'].includes(url.protocol)){report.externalBlocked.push({id,url:url.href});return route.abort();}
@@ -160,16 +244,17 @@ async function openCover({width,height,authenticated,legacy,mobile,id}){
   return context;
 }
 
-async function runCase(width,height,authenticated,legacy){
-  const mobile=height<=650,id=`${width}x${height}-${authenticated?'signed-in-long-name':'anonymous'}-${legacy?'legacy-save':'fresh'}`;
-  const row={id,kind:'fresh',width,height,authenticated,legacy,mobile,passed:false,geometry:[],selections:[]};report.cases.push(row);report.phase=id+'-load';
-  const context=await openCover({width,height,authenticated,legacy,mobile,id});
+async function runCase(width,height,authenticated,legacy,safeInsets=null){
+  const mobile=height<=650,id=`${width}x${height}-${authenticated?'signed-in-long-name':'anonymous'}-${legacy?'legacy-save':'fresh'}${safeInsets?'-safe-left44-bottom21':''}`;
+  const row={id,kind:safeInsets?'safe-insets':'fresh',width,height,authenticated,legacy,mobile,safeInsets,passed:false,geometry:[],selections:[]};report.cases.push(row);report.phase=id+'-load';
+  const context=await openCover({width,height,authenticated,legacy,mobile,id,safeInsets});
 
   // This is intentionally the first UI inspection, before any operation that
   // could bring an offscreen control into view or hide an original clipping bug.
   report.phase=id+'-initial-unscrolled';
   assert.equal(await page.locator('.talent-picker label').count(),3);
-  const first=await geometry(coreSelectors,'initial-unscrolled',row);
+  await geometry(coreSelectors,'initial-unscrolled',row);
+  await completeCover('initial-unscrolled',row);
   row.initialScroll=await scrollOffsets();
   assert.ok(row.initialScroll.every(item=>item.top===0&&item.left===0),'Initial welcome ancestors have never scrolled');
   assert.equal(await page.locator('.welcome-actions button').count(),1,'There is one primary journey action');
@@ -179,19 +264,6 @@ async function runCase(width,height,authenticated,legacy){
   assert.equal(await page.locator('#inherit-next').count(),legacy?1:0,'Legal legacy fixture mounts inheritance');
   if(authenticated)assert.equal(await page.locator('.welcome-account-slot .zhihu-account-name').innerText(),'知乎 · '+accountName);
   else assert.equal(await page.locator('.welcome-account-slot').isVisible(),false);
-  if(mobile){
-    const cards=first.slice(0,3).map(item=>item.rect);
-    assert.ok(Math.max(...cards.map(card=>card.top))-Math.min(...cards.map(card=>card.top))<=1,'All three mobile cards occupy one visible row');
-    assert.ok(cards[0].right<=cards[1].left+1&&cards[1].right<=cards[2].left+1,'Mobile cards do not overlap each other');
-    assert.equal(await page.locator('.talent-brief:visible').count(),3,'All three mobile cards show their concise explanation');
-    await geometry(['#talent-details'],'initial-details-entry',row);
-  }else{
-    assert.equal(await page.locator('#talent-details').isVisible(),false,'Desktop hides the mobile details entry');
-    assert.equal(await page.locator('.talent-brief:visible').count(),0,'Desktop hides the additional mobile-only brief text');
-    assert.equal(await page.locator('.talent-effect:visible').count(),3,'Desktop keeps all full effects visible');
-    assert.equal(await page.locator('.talent-note:visible').count(),3,'Desktop keeps all notes visible');
-    const text=await page.locator('.talent-picker').innerText();for(const effect of effects)assert.ok(text.includes(effect),`Desktop retains full rule: ${effect}`);
-  }
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'No horizontal page overflow');
   await capture(id+'-initial');
 
@@ -206,32 +278,11 @@ async function runCase(width,height,authenticated,legacy){
     row.selections.push({talent,scrollUnchanged:true});
   }
   if(legacy){
-    // A user-modified inheritance setting must survive the information dialog.
+    // A user-modified inheritance setting must not move or truncate the cover.
     await page.locator('#inherit-next').uncheck();
     await geometry(coreSelectors,'inheritance-disabled',row);
   }
-
-  if(mobile){
-    report.phase=id+'-details';
-    const before=await formState(),beforeScroll=await scrollOffsets();
-    await clickPoint('#talent-details');await page.locator('#dialog.talent-info-dialog[open]').waitFor();await settle();
-    await geometry(['#dialog','#dialog-close'],'details-open',row);
-    const text=await page.locator('#dialog-content').innerText();
-    for(const title of titleNames)assert.ok(text.includes(title),`Details includes ${title}`);
-    for(const effect of effects)assert.ok(text.includes(effect),`Details includes complete rule: ${effect}`);
-    assert.deepEqual(await formState(),before,'Opening details leaves form and both save records untouched');
-    row.detailsText=text;await capture(id+'-details');
-    await clickPoint('#dialog-close');await page.locator('#dialog[open]').waitFor({state:'hidden'});await settle();
-    assert.deepEqual(await formState(),before,'Closing details keeps nickname, talent, inheritance and original save bytes');
-    assert.deepEqual(await scrollOffsets(),beforeScroll,'Closing details restores the unchanged welcome scroll offsets');
-    await geometry(coreSelectors,'details-closed',row);row.detailsPreservedState=true;
-    // The same dialog must remain reusable, with normal Escape dismissal.
-    await clickPoint('#talent-details');await page.locator('#dialog.talent-info-dialog[open]').waitFor();
-    await page.keyboard.press('Escape');await page.locator('#dialog[open]').waitFor({state:'hidden'});await settle();
-    assert.deepEqual(await formState(),before,'Escape dismissal also preserves form and saves');
-    assert.deepEqual(await scrollOffsets(),beforeScroll,'Escape dismissal leaves welcome scroll unchanged');
-    await geometry(coreSelectors,'details-escape-closed',row);row.escapePreservedState=true;
-  }
+  await completeCover('configured-direct-content',row);
   const after=await formState();assert.equal(after.name,nickname);assert.equal(after.talent,'optimistic');
   assert.equal(after.journeyRaw,initial.journeyRaw);assert.equal(after.legacyRaw,initial.legacyRaw);
   await capture(id+'-configured');
@@ -263,6 +314,7 @@ async function runResizeCase(authenticated){
   report.cases.push(row);report.phase=id+'-load';
   const context=await openCover({width:844,height:300,authenticated,legacy:true,mobile:true,id});
   await geometry(coreSelectors,'initial-unscrolled',row);
+  await completeCover('initial-unscrolled',row);
   await assertViewport(844,300,'initial-layout',row);
   await page.locator('#character-name').fill(nickname);
   await clickPoint(labelFor('ambitious'));
@@ -291,6 +343,7 @@ async function runResizeCase(authenticated){
     }else{
       await page.locator('#orientation-gate').waitFor({state:'hidden'});
       await geometry(coreSelectors,stage+'-before-input',row);
+      await completeCover(stage+'-direct-content',row);
       assert.equal(await page.locator('#overlay-shell').evaluate(node=>node.inert),false,'Returning to landscape restores form interaction');
       for(const talent of talents){
         await clickPoint(labelFor(talent));
@@ -314,9 +367,10 @@ try{
   browser=await chromium.launch({channel:'chrome',headless:true,args:['--enable-webgl','--use-gl=angle','--use-angle=d3d11','--ignore-gpu-blocklist']});
   for(const [width,height]of viewports)for(const authenticated of [false,true])for(const legacy of [false,true])await runCase(width,height,authenticated,legacy);
   for(const authenticated of [false,true])await runResizeCase(authenticated);
+  await runCase(844,300,true,true,{left:44,right:0,top:0,bottom:21});
   assert.deepEqual(report.errors,[],'No browser runtime errors');assert.equal(report.realApiCalls,0);
-  assert.equal(report.cases.filter(row=>row.kind==='fresh').length,24);assert.equal(report.cases.filter(row=>row.kind==='resize').length,2);
-  assert.equal(report.cases.length,26);assert.ok(report.cases.every(row=>row.passed));report.passed=true;report.phase='complete';
+  assert.equal(report.cases.filter(row=>row.kind==='fresh').length,28);assert.equal(report.cases.filter(row=>row.kind==='resize').length,2);
+  assert.equal(report.cases.filter(row=>row.kind==='safe-insets').length,1);assert.equal(report.cases.length,31);assert.ok(report.cases.every(row=>row.passed));report.passed=true;report.phase='complete';
 }catch(error){
   report.failure={phase:report.phase,message:error.message,stack:error.stack};
   if(page&&!page.isClosed()){await capture('failure').catch(()=>{});report.failureUI=await page.evaluate(()=>({stage:document.querySelector('.experience')?.dataset.stage,text:document.body.innerText.slice(-8000)})).catch(()=>null);}

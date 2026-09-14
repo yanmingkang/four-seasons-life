@@ -41,6 +41,44 @@ async function checkCover(page,width,height){
   report.checks.push({width,height,phase:'all-visible-before-input',checks});
 }
 const scrollOffsets=page=>page.evaluate(()=>[document.documentElement,document.body,...document.querySelectorAll('.welcome-panel,.welcome-panel *')].map(node=>[node.scrollLeft,node.scrollTop]));
+async function fullContent(page,width,height){
+  const selectors=['.brand>span:last-child','.brand small','.player-badge b','.player-badge small','.status-strip .eyebrow','#money-value','#mood-value','#mood-max','#exp-value','#exp-stars','#route-value','.journey-resource>small','.season-step',
+    '.welcome-top .tiny-label','.welcome-kicker','.welcome-panel h1','.welcome-panel .intro-copy','.welcome-illustration i','.starter-resources b','.welcome-fineprint','.talent-effect','.talent-note',
+    '#journal-button span','#rules-button span','#view-follow','#view-overview','#town-gallery','.auto-setting>span:last-child','#all-sources'];
+  // Test full text lines, not just a visible outer card: clipped/hidden rules
+  // would otherwise pass even though the phone no longer matches the desktop.
+  const result=await page.evaluate(selectors=>selectors.flatMap(selector=>{
+    const nodes=[...document.querySelectorAll(selector)];
+    if(!nodes.length)return [{selector,visible:false,reason:'missing'}];
+    return nodes.map(node=>{
+      let visible=true,lines=0,clip={left:0,top:0,right:innerWidth,bottom:innerHeight};
+      for(let p=node;p;p=p.parentElement){
+        const css=getComputedStyle(p),r=p.getBoundingClientRect();
+        if(css.display==='none'||css.visibility==='hidden'||css.opacity==='0')visible=false;
+        if(css.display==='contents')continue;
+        if(/auto|scroll|hidden|clip/.test(css.overflowX)){clip.left=Math.max(clip.left,r.left+p.clientLeft);clip.right=Math.min(clip.right,r.left+p.clientLeft+p.clientWidth);}
+        if(/auto|scroll|hidden|clip/.test(css.overflowY)){clip.top=Math.max(clip.top,r.top+p.clientTop);clip.bottom=Math.min(clip.bottom,r.top+p.clientTop+p.clientHeight);}
+      }
+      const walker=document.createTreeWalker(node,NodeFilter.SHOW_TEXT);let text;
+      while(text=walker.nextNode()){
+        if(!text.textContent.trim()||text.parentElement.closest('svg'))continue;
+        const range=document.createRange();range.selectNodeContents(text);
+        for(const r of range.getClientRects()){
+          if(!r.width||!r.height)continue;lines++;
+          if(r.left<clip.left-1||r.right>clip.right+1||r.top<clip.top-1||r.bottom>clip.bottom+1)visible=false;
+        }
+      }
+      return {selector,visible:visible&&lines>0,lines};
+    });
+  }),selectors);
+  assert.ok(result.every(row=>row.visible),`All desktop information must appear in full at ${width}x${height}: ${JSON.stringify(result.filter(row=>!row.visible))}`);
+  assert.equal(await page.locator('.talent-brief:visible').count(),0);
+  assert.equal(await page.locator('.talent-effect:visible').count(),3);
+  assert.equal(await page.locator('.talent-note:visible').count(),3);
+  assert.ok(await page.locator('.welcome-illustration img').isVisible());
+  for(const selector of ['#zoom-out','#reset-view','#zoom-in'])assert.ok(await page.locator(selector).isVisible());
+  report.checks.push({width,height,phase:'full-desktop-content',textBlocks:result.length});
+}
 let browser,page;
 try{
   browser=await chromium.launch({channel:'chrome',headless:true,args:['--no-proxy-server','--enable-webgl','--use-gl=angle','--use-angle=d3d11','--ignore-gpu-blocklist']});
@@ -63,6 +101,7 @@ try{
     await page.setViewportSize({width,height});await page.waitForTimeout(300);
     assert.equal(await page.locator('.daylight-switch').isVisible(),false);
     await checkCover(page,width,height);
+    await fullContent(page,width,height);
     const placeholderFits=await page.locator('#character-name').evaluate(input=>{
       const style=getComputedStyle(input),placeholder=getComputedStyle(input,'::placeholder');
       const ctx=document.createElement('canvas').getContext('2d');ctx.font=placeholder.font||style.font;
