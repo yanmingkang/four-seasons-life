@@ -19,6 +19,8 @@ import './practice-invitation.css';
 import './welcome-entry.css';
 import './arrival-seasons.css';
 import './zhihu-auth.css';
+import './mobile-layout.css';
+import {mountMobileViewport} from './mobile-viewport.js';
 import {createZhihuAuthUI,saveZhihuLoginDraft,restoreZhihuLoginDraft} from './zhihu-auth-ui.js';
 import {mountSharePreview} from './share-preview.js';
 import {daylightMarkup,mountDaylightSwitch} from './world-daylight.js';
@@ -255,7 +257,7 @@ function renderStory(){
     $('.welcome-top').insertAdjacentHTML('beforeend','<div class="welcome-account-slot" hidden></div>');
     zhihuAuth.mount($('.welcome-account-slot'));
     const legacy=readLegacy();
-    if(legacy?.available){$('.welcome-actions').insertAdjacentHTML('beforebegin',`<label class="life-inheritance"><input id="inherit-next" type="checkbox" ${inheritNext?'checked':''}/><span>带上上一程的积累<small>${escape(legacyBonusText(legacy))} · 固定保留，不重复叠加</small></span></label>`);$('#inherit-next').onchange=e=>{inheritNext=e.target.checked;};}
+    if(legacy?.available){$('.welcome-settings-scroll').insertAdjacentHTML('beforeend',`<label class="life-inheritance"><input id="inherit-next" type="checkbox" ${inheritNext?'checked':''}/><span>带上上一程的积累<small>${escape(legacyBonusText(legacy))} · 固定保留，不重复叠加</small></span></label>`);$('#inherit-next').onchange=e=>{inheritNext=e.target.checked;};}
     $('#start-full').onclick=enterJourney;updateLoginEntry();return;
   }
   if(state.phase==='ready'){
@@ -570,4 +572,5 @@ function syncOrientation(){
   if(blocked)cancelDeparture();else {if(portraitDialog){portraitDialog=false;dialog.showModal();dialog.scrollTop=portraitDialogScroll;}queueDeparture();}
   syncInteraction();
 }
+mountMobileViewport();
 window.addEventListener('resize',syncOrientation);syncOrientation();

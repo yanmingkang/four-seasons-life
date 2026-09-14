@@ -1,0 +1,77 @@
+/* Use the visible browser area, including in-app browser bars and keyboards.
+   JS supplies a fallback for WebViews whose dvh still follows the layout area. */
+:root{--game-safe-top:env(safe-area-inset-top,0px);--game-safe-right:env(safe-area-inset-right,0px);--game-safe-bottom:env(safe-area-inset-bottom,0px);--game-safe-left:env(safe-area-inset-left,0px)}
+.experience{height:var(--game-viewport-height,100dvh);width:var(--game-viewport-width,100%);top:var(--game-viewport-top,0px);left:var(--game-viewport-left,0px);container-type:size;container-name:game-viewport}
+.welcome-settings-scroll{min-width:0}
+.welcome-settings-scroll:focus-visible{outline:2px solid #8da56b;outline-offset:1px}
+.experience:is([data-stage="welcome"],[data-stage="finished"])>.daylight-switch{display:none}
+dialog#dialog{max-height:calc(var(--game-viewport-height,100dvh) - var(--game-safe-top) - var(--game-safe-bottom) - 16px);max-width:calc(var(--game-viewport-width,100vw) - var(--game-safe-left) - var(--game-safe-right) - 16px);overscroll-behavior:contain;inset-block:calc(var(--game-viewport-top,0px) + var(--game-safe-top)) calc(100dvh - var(--game-viewport-height,100dvh) - var(--game-viewport-top,0px) + var(--game-safe-bottom));inset-inline:calc(var(--game-viewport-left,0px) + var(--game-safe-left)) calc(100vw - var(--game-viewport-width,100vw) - var(--game-viewport-left,0px) + var(--game-safe-right))}
+
+@media(orientation:landscape) and (max-height:650px){
+  /* The cover does not need an empty resource HUD or travel controls. */
+  .experience[data-stage="welcome"]>:is(.status-strip,.bottom-tools,.travel-status){display:none}
+  .experience[data-stage="welcome"] .overlay-shell{inset:max(54px,var(--game-safe-top)) max(12px,var(--game-safe-right)) max(12px,var(--game-safe-bottom)) max(12px,var(--game-safe-left))}
+  .welcome-panel{width:min(920px,100%);padding:12px 18px}
+  .welcome-panel .welcome-layout{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:18px}
+  .welcome-panel .welcome-story{min-width:0;padding-right:14px}
+  .welcome-panel #character-name{font-size:16px;line-height:1.4;min-height:40px}
+  .welcome-panel .talent-picker label{min-height:48px}
+  .welcome-panel .talent-picker b{font-size:13px}
+  .welcome-panel .talent-picker small{font-size:11px;line-height:1.5}
+  .welcome-panel .welcome-actions .primary{min-height:44px;font-size:14px;line-height:1.4;padding:5px 10px}
+  .welcome-panel .welcome-actions .primary small{font-size:10px}
+  .welcome-panel .life-inheritance{margin:10px 0;align-items:flex-start;line-height:1.5}
+  .topbar{left:max(12px,var(--game-safe-left));right:max(12px,var(--game-safe-right));top:max(8px,var(--game-safe-top))}
+  .bottom-tools{left:max(12px,var(--game-safe-left));right:max(12px,var(--game-safe-right));bottom:max(8px,var(--game-safe-bottom))}
+  .travel-status{bottom:max(9px,var(--game-safe-bottom))}
+  .overlay-shell{left:max(12px,var(--game-safe-left));right:max(12px,var(--game-safe-right));bottom:max(52px,var(--game-safe-bottom))}
+  .story-panel{min-height:0;max-width:100%;scroll-padding-block:12px}
+  .feedback-panel #next-button{bottom:0;min-height:40px}
+  .practice-form textarea{font-size:16px}
+  .practice-dialog .dialog-close,.town-dialog .dialog-close{position:sticky;float:right;top:0;z-index:5}
+  /* Short landscape widths must not inherit the tall portrait HUD minimum. */
+  .status-strip{min-height:0;max-width:calc(100% - 280px);gap:10px;padding:6px 10px 8px}
+  dialog{max-height:calc(var(--game-viewport-height,100dvh) - 16px);max-width:calc(100vw - max(24px,env(safe-area-inset-left) + env(safe-area-inset-right)))}
+  dialog.share-dialog{height:calc(var(--game-viewport-height,100dvh) - 16px);max-height:calc(var(--game-viewport-height,100dvh) - 16px)}
+  /* Album pages scroll independently; images may never cover the page controls. */
+  dialog.memory-dialog{height:calc(var(--game-viewport-height,100dvh) - 16px);max-height:calc(var(--game-viewport-height,100dvh) - 16px);padding:10px 18px 8px;overflow:hidden}
+  .memory-dialog #dialog-content,.memory-dialog .memory-album{height:100%;min-height:0}
+  .memory-dialog .memory-album{display:flex;flex-direction:column}
+  .memory-dialog .memory-topline{flex:none;min-height:38px}
+  .memory-dialog .memory-page{flex:1 1 0;min-height:0;height:auto;overflow-y:auto;overscroll-behavior:contain;align-items:start;grid-template-columns:minmax(0,.9fr) minmax(0,1.2fr);gap:18px;padding:10px 0;scrollbar-width:thin}
+  .memory-dialog .memory-page .memory-copy{max-height:none;overflow:visible;padding:0}
+  .memory-dialog .memory-page .memory-filmstrip{max-height:none;transform:none}
+  .memory-dialog .memory-page .memory-photo img{max-height:max(100px,calc(var(--game-viewport-height,100dvh) - 165px));object-fit:contain}
+  .memory-dialog .memory-page .memory-cover-print .memory-photo img{height:52px;max-height:52px}
+  .memory-dialog .memory-navigation{flex:none;position:relative;background:#f9f5e9;gap:6px;flex-wrap:nowrap;padding:6px 0 0}
+  .memory-dialog .memory-navigation nav{order:0;flex:1;min-width:0;justify-content:space-evenly;overflow-x:auto}
+  .memory-dialog .memory-navigation nav button{min-width:28px;padding:6px 3px;font-size:12px}
+  .memory-dialog .memory-navigation>button{flex:none;width:34px;height:34px}
+  .memory-dialog .memory-inheritance{flex:none;max-height:45px;overflow-y:auto;margin:0;font-size:11px}
+  .memory-dialog .memory-footnote{display:none}
+}
+
+/* A keyboard can shrink only VisualViewport, leaving media queries unchanged. */
+@container game-viewport (max-height:260px){
+  .experience[data-stage="welcome"] .topbar,.welcome-panel .welcome-top{display:none}
+  .experience[data-stage="welcome"] .overlay-shell{top:max(8px,var(--game-safe-top));bottom:max(8px,var(--game-safe-bottom))}
+}
+
+@media(orientation:landscape) and (max-height:350px){
+  .welcome-panel{padding:8px 14px}
+  .welcome-panel .welcome-top{margin-bottom:4px;min-height:14px}
+  .welcome-panel h1{font-size:24px;letter-spacing:2px}
+  .welcome-panel .starter-resources{margin:6px 0;padding:4px 0}
+  .welcome-panel .welcome-actions{margin-top:5px}
+}
+
+@media(orientation:landscape) and (max-width:740px){
+  .status-strip{left:max(55px,var(--game-safe-left));transform:none;max-width:calc(100% - 320px);gap:7px}
+  .status-strip .resource-icon,.status-strip #exp-stars{display:none!important}
+  .status-strip .resource strong{font-size:16px}.status-strip .resource i{font-size:9px}
+  .status-strip .journey-resource{padding-left:7px}.status-strip .journey-resource strong{font-size:12px}
+  .status-strip .mood-track{width:48px}
+  .welcome-panel .welcome-layout{grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr);gap:12px}
+  .welcome-panel h1{font-size:22px;letter-spacing:1px}
+  .welcome-top .tiny-label{letter-spacing:1px}
+}
